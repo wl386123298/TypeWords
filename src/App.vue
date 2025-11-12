@@ -12,10 +12,12 @@ import { useRoute } from "vue-router";
 import { DictId } from "@/types/types.ts";
 import { APP_VERSION, CAN_REQUEST, LOCAL_FILE_KEY, SAVE_DICT_KEY, SAVE_SETTING_KEY } from "@/config/env.ts";
 import { syncSetting } from "@/apis";
+import {useAuthStore} from "@/stores/auth.ts";
 
 const store = useBaseStore()
 const runtimeStore = useRuntimeStore()
 const settingStore = useSettingStore()
+const authStore = useAuthStore()
 const {setTheme} = useTheme()
 
 let lastAudioFileIdList = []
@@ -60,6 +62,8 @@ async function init() {
   await store.init()
   await settingStore.init()
   store.load = true
+  await authStore.init()
+
   setTheme(settingStore.theme)
 
   if (!settingStore.first) {
@@ -78,19 +82,19 @@ watch(() => route.path, (to, from) => {
   return transitionName = ''
   // console.log('watch', to, from)
   // //footer下面的5个按钮，对跳不要用动画
-  let noAnimation = [
-    '/pc/practice',
-    '/pc/dict',
-    '/mobile',
-    '/'
-  ]
-  if (noAnimation.indexOf(from) !== -1 && noAnimation.indexOf(to) !== -1) {
-    return transitionName = ''
-  }
-
-  const toDepth = routes.findIndex(v => v.path === to)
-  const fromDepth = routes.findIndex(v => v.path === from)
-  transitionName = toDepth > fromDepth ? 'go' : 'back'
+  // let noAnimation = [
+  //   '/pc/practice',
+  //   '/pc/dict',
+  //   '/mobile',
+  //   '/'
+  // ]
+  // if (noAnimation.indexOf(from) !== -1 && noAnimation.indexOf(to) !== -1) {
+  //   return transitionName = ''
+  // }
+  //
+  // const toDepth = routes.findIndex(v => v.path === to)
+  // const fromDepth = routes.findIndex(v => v.path === from)
+  // transitionName = toDepth > fromDepth ? 'go' : 'back'
   // console.log('transitionName', transitionName, toDepth, fromDepth)
 })
 </script>

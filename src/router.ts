@@ -11,8 +11,8 @@ import DictList from "@/pages/word/DictList.vue";
 import BookList from "@/pages/article/BookList.vue";
 import Setting from "@/pages/setting/Setting.vue";
 import Login from "@/pages/user/login.vue";
-import User from "@/pages/user/index.vue";
-import { useAuthStore } from "@/stores/auth.ts";
+import User from "@/pages/user/User.vue";
+// import { useAuthStore } from "@/stores/auth.ts";
 
 export const routes: RouteRecordRaw[] = [
   {
@@ -61,26 +61,26 @@ const router = VueRouter.createRouter({
 router.beforeEach(async (to: any, from: any) => {
   return true
 
-  const authStore = useAuthStore()
-  
-  // 公共路由，不需要登录验证
-  const publicRoutes = ['/login', '/wechat/callback', '/user-agreement', '/privacy-policy']
-  
-  // 如果目标路由是公共路由，直接放行
-  if (publicRoutes.includes(to.path)) {
-    return true
-  }
-  
-  // 如果用户未登录，跳转到登录页
-  if (!authStore.isLoggedIn) {
-    // 尝试初始化认证状态
-    const isInitialized = await authStore.initAuth()
-    if (!isInitialized) {
-      return {path: '/login', query: {redirect: to.fullPath}}
-    }
-  }
-  
-  return true
+  // const authStore = useAuthStore()
+  //
+  // // 公共路由，不需要登录验证
+  // const publicRoutes = ['/login', '/wechat/callback', '/user-agreement', '/privacy-policy']
+  //
+  // // 如果目标路由是公共路由，直接放行
+  // if (publicRoutes.includes(to.path)) {
+  //   return true
+  // }
+  //
+  // // 如果用户未登录，跳转到登录页
+  // if (!authStore.isLoggedIn) {
+  //   // 尝试初始化认证状态
+  //   const isInitialized = await authStore.initAuth()
+  //   if (!isInitialized) {
+  //     return {path: '/login', query: {redirect: to.fullPath}}
+  //   }
+  // }
+  //
+  // return true
   // console.log('beforeEach-to',to.path)
   // console.log('beforeEach-from',from.path)
   // const runtimeStore = useRuntimeStore()

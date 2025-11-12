@@ -1,7 +1,4 @@
-import { useBaseStore } from "@/stores/base.ts";
-
 export const GITHUB = 'https://github.com/zyronon/TypeWords'
-export const ProjectName = 'Type Words'
 export const Host = '2study.top'
 export const Origin = `https://${Host}`
 export const APP_NAME = 'Type Words'
@@ -18,9 +15,20 @@ const map = {
 export const ENV = Object.assign(map['DEV'], common)
 // export const IS_OFFICIAL = import.meta.env.DEV
 // export let IS_LOGIN = true
-export const IS_OFFICIAL = false
-export let IS_LOGIN = false
-export const CAN_REQUEST = IS_LOGIN && IS_OFFICIAL
+export let IS_OFFICIAL = true
+export let IS_LOGIN = (!!localStorage.getItem('token')) || false
+export let CAN_REQUEST = IS_LOGIN && IS_OFFICIAL
+
+export let AppEnv = {
+  TOKEN: localStorage.getItem('token') ?? '',
+  IS_OFFICIAL: true,
+  IS_LOGIN: false,
+  CAN_REQUEST: false
+}
+
+AppEnv.IS_LOGIN = !!AppEnv.TOKEN
+AppEnv.CAN_REQUEST = AppEnv.IS_LOGIN && AppEnv.IS_OFFICIAL
+
 export const RESOURCE_PATH = ENV.API + 'static'
 
 export const DICT_LIST = {
@@ -58,6 +66,7 @@ export const EXPORT_DATA_KEY = {
   version: 4
 }
 export const LOCAL_FILE_KEY = 'typing-word-files'
+
 export const PracticeSaveWordKey = {
   key: 'PracticeSaveWord',
   version: 1

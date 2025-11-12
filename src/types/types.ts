@@ -230,3 +230,9 @@ export enum WordPracticeType {
   Listen,
   Dictation
 }
+
+export enum CodeType {
+  Login = 0,
+  Register = 1,
+  ResetPwd = 2,
+}

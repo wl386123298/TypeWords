@@ -19,9 +19,13 @@ const myRules = $computed(() => {
 })
 
 // 校验函数
-const validate = (rules) => {
+const validate = (rules, isBlur = false) => {
   error = ''
   const val = formModel.value[props.prop]
+  //为空并且是非主动触发检验的情况下，不检验
+  if (isBlur && val.trim() === '') {
+    return true
+  }
   for (const rule of rules) {
     if (rule.required && (!val || !val.toString().trim())) {
       error = rule.message
@@ -55,7 +59,7 @@ const validate = (rules) => {
 // 自动触发 blur 校验
 function handleBlur() {
   const blurRules = myRules.filter((r) => r.trigger === 'blur')
-  if (blurRules.length) validate(blurRules)
+  if (blurRules.length) validate(blurRules, true)
 }
 
 function handChange() {

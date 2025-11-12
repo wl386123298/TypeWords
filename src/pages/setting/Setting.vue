@@ -1,17 +1,17 @@
 <script setup lang="ts">
-import { nextTick, ref, watch } from "vue";
-import { useSettingStore } from "@/stores/setting.ts";
-import { getAudioFileUrl, usePlayAudio } from "@/hooks/sound.ts";
-import { getShortcutKey, useEventListener } from "@/hooks/event.ts";
-import { checkAndUpgradeSaveDict, checkAndUpgradeSaveSetting, cloneDeep, loadJsLib, shakeCommonDict } from "@/utils";
-import { DefaultShortcutKeyMap, ShortcutKey, WordPracticeMode } from "@/types/types.ts";
+import {nextTick, ref, watch} from "vue";
+import {useSettingStore} from "@/stores/setting.ts";
+import {getAudioFileUrl, usePlayAudio} from "@/hooks/sound.ts";
+import {getShortcutKey, useEventListener} from "@/hooks/event.ts";
+import {checkAndUpgradeSaveDict, checkAndUpgradeSaveSetting, cloneDeep, loadJsLib, shakeCommonDict} from "@/utils";
+import {DefaultShortcutKeyMap, ShortcutKey, WordPracticeMode} from "@/types/types.ts";
 import BaseButton from "@/components/BaseButton.vue";
 import VolumeIcon from "@/components/icon/VolumeIcon.vue";
-import { useBaseStore } from "@/stores/base.ts";
-import { saveAs } from "file-saver";
+import {useBaseStore} from "@/stores/base.ts";
+import {saveAs} from "file-saver";
 import {
   APP_NAME, APP_VERSION,
-  EXPORT_DATA_KEY,
+  EXPORT_DATA_KEY, GITHUB,
   LOCAL_FILE_KEY,
   Origin,
   PracticeSaveArticleKey,
@@ -20,7 +20,7 @@ import {
 import dayjs from "dayjs";
 import BasePage from "@/components/BasePage.vue";
 import Toast from '@/components/base/toast/Toast.ts'
-import { Option, Select } from "@/components/base/select";
+import {Option, Select} from "@/components/base/select";
 import Switch from "@/components/base/Switch.vue";
 import Slider from "@/components/base/Slider.vue";
 import RadioGroup from "@/components/base/radio/RadioGroup.vue";
@@ -29,9 +29,9 @@ import InputNumber from "@/components/base/InputNumber.vue";
 import PopConfirm from "@/components/PopConfirm.vue";
 import Textarea from "@/components/base/Textarea.vue";
 import SettingItem from "@/pages/setting/SettingItem.vue";
-import { get, set } from "idb-keyval";
-import { useRuntimeStore } from "@/stores/runtime.ts";
-import { useAuthStore } from "@/stores/auth.ts";
+import {get, set} from "idb-keyval";
+import {useRuntimeStore} from "@/stores/runtime.ts";
+import {useAuthStore} from "@/stores/auth.ts";
 
 const emit = defineEmits<{
   toggleDisabledDialogEscKey: [val: boolean]
@@ -98,7 +98,7 @@ useEventListener('keydown', (e: KeyboardEvent) => {
     } else {
       // 忽略单独的修饰键
       if (shortcutKey === 'Ctrl+' || shortcutKey === 'Alt+' || shortcutKey === 'Shift+' ||
-          e.key === 'Control' || e.key === 'Alt' || e.key === 'Shift') {
+        e.key === 'Control' || e.key === 'Alt' || e.key === 'Shift') {
         return;
       }
 
@@ -427,8 +427,8 @@ function importOldData() {
                        v-if="settingStore.ignoreSimpleWord"
           >
             <Textarea
-                placeholder="多个单词用英文逗号隔号"
-                v-model="simpleWords" :autosize="{minRows: 6, maxRows: 10}"/>
+              placeholder="多个单词用英文逗号隔号"
+              v-model="simpleWords" :autosize="{minRows: 6, maxRows: 10}"/>
           </SettingItem>
 
           <!--          音效-->
@@ -456,16 +456,16 @@ function importOldData() {
                     class="w-50!"
             >
               <Option
-                  v-for="item in SoundFileOptions"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value"
+                v-for="item in SoundFileOptions"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
               >
                 <div class="flex justify-between items-center w-full">
                   <span>{{ item.label }}</span>
                   <VolumeIcon
-                      :time="100"
-                      @click="usePlayAudio(getAudioFileUrl(item.value)[0])"/>
+                    :time="100"
+                    @click="usePlayAudio(getAudioFileUrl(item.value)[0])"/>
                 </div>
               </Option>
             </Select>
@@ -583,16 +583,16 @@ function importOldData() {
           <SettingItem mainTitle="字体设置"/>
           <SettingItem title="外语字体">
             <Slider
-                :min="10"
-                :max="100"
-                v-model="settingStore.fontSize.wordForeignFontSize"/>
+              :min="10"
+              :max="100"
+              v-model="settingStore.fontSize.wordForeignFontSize"/>
             <span class="w-10 pl-5">{{ settingStore.fontSize.wordForeignFontSize }}px</span>
           </SettingItem>
           <SettingItem title="中文字体">
             <Slider
-                :min="10"
-                :max="100"
-                v-model="settingStore.fontSize.wordTranslateFontSize"/>
+              :min="10"
+              :max="100"
+              v-model="settingStore.fontSize.wordTranslateFontSize"/>
             <span class="w-10 pl-5">{{ settingStore.fontSize.wordTranslateFontSize }}px</span>
           </SettingItem>
         </div>
@@ -637,7 +637,7 @@ function importOldData() {
                   <input ref="shortcutInput" :value="item[1]?item[1]:'未设置快捷键'" readonly type="text"
                          @blur="handleInputBlur">
                   <span @click.stop="editShortcutKey = ''">按键盘进行设置，<span
-                      class="text-red!">设置完成点击这里</span></span>
+                    class="text-red!">设置完成点击这里</span></span>
                 </div>
                 <div v-else>
                   <div v-if="item[1]">{{ item[1] }}</div>
@@ -674,8 +674,8 @@ function importOldData() {
                      @change="importData">
             </div>
             <PopConfirm
-                title="导入老版本数据前，请先备份当前数据，确定要导入老版本数据吗？"
-                @confirm="importOldData">
+              title="导入老版本数据前，请先备份当前数据，确定要导入老版本数据吗？"
+              @confirm="importOldData">
               <BaseButton>老版本数据导入</BaseButton>
             </PopConfirm>
           </div>
@@ -771,15 +771,31 @@ function importOldData() {
               </div>
             </div>
           </div>
+          <div class="log-item">
+            <div class="mb-2">
+              <div>
+                <div>更新日期：2025/8/10</div>
+                <div>更新内容：2.0版本发布，全新UI，全新逻辑，新增短语、例句、近义词等功能</div>
+              </div>
+            </div>
+          </div>
+          <div class="log-item">
+            <div class="mb-2">
+              <div>
+                <div>更新日期：2025/7/19</div>
+                <div>更新内容：1.0版本发布</div>
+              </div>
+            </div>
+          </div>
         </div>
 
         <div v-if="tabIndex === 6" class="center flex-col">
           <h1>Type Words</h1>
-          
+
           <!-- 用户信息部分 -->
           <div v-if="authStore.isLoggedIn && authStore.user" class="user-info-section mb-6">
             <div class="user-avatar mb-4">
-              <img v-if="authStore.user.avatar" :src="authStore.user.avatar" alt="头像" class="avatar-img" />
+              <img v-if="authStore.user.avatar" :src="authStore.user.avatar" alt="头像" class="avatar-img"/>
               <div v-else class="avatar-placeholder">
                 {{ authStore.user.nickname?.charAt(0) || 'U' }}
               </div>
@@ -787,26 +803,25 @@ function importOldData() {
             <h3 class="mb-2">{{ authStore.user.nickname || '用户' }}</h3>
             <p v-if="authStore.user.email" class="text-sm color-gray mb-1">{{ authStore.user.email }}</p>
             <p v-if="authStore.user.phone" class="text-sm color-gray">{{ authStore.user.phone }}</p>
-            
-            <BaseButton 
-              @click="authStore.logout" 
-              type="info" 
-              class="mt-4" 
+
+            <BaseButton
+              @click="authStore.logout"
+              type="info"
+              class="mt-4"
               :loading="authStore.isLoading"
             >
               退出登录
             </BaseButton>
           </div>
-          
+
           <p class="w-100 text-xl">
             感谢使用本项目！本项目是开源项目，如果觉得有帮助，请在 GitHub 点个 Star，您的支持是我持续改进的动力。
           </p>
           <p>
-            GitHub地址：<a href="https://github.com/zyronon/TypeWords" target="_blank">https://github.com/zyronon/TypeWords</a>
+            GitHub地址：<a :href="GITHUB" target="_blank">{{ GITHUB }}</a>
           </p>
           <p>
-            反馈：<a
-              href="https://github.com/zyronon/TypeWords/issues" target="_blank">https://github.com/zyronon/TypeWords/issues</a>
+            反馈：<a :href="`${GITHUB}/issues`" target="_blank">{{ GITHUB }}/issues</a>
           </p>
           <p>
             作者邮箱：<a href="mailto:zyronon@163.com">zyronon@163.com</a>
@@ -823,7 +838,7 @@ function importOldData() {
 
 <style scoped lang="scss">
 
-.log-item{
+.log-item {
   border-bottom: 1px solid var(--color-input-border);
   margin-bottom: 1rem;
 }
@@ -839,20 +854,20 @@ function importOldData() {
   background: var(--color-bg);
   width: 100%;
   max-width: 400px;
-  
+
   .user-avatar {
     width: 80px;
     height: 80px;
     border-radius: 50%;
     overflow: hidden;
     border: 3px solid var(--color-select-bg);
-    
+
     .avatar-img {
       width: 100%;
       height: 100%;
       object-fit: cover;
     }
-    
+
     .avatar-placeholder {
       width: 100%;
       height: 100%;
@@ -865,33 +880,33 @@ function importOldData() {
       font-weight: bold;
     }
   }
-  
+
   h3 {
     margin: 0;
     color: var(--color-font-1);
   }
-  
+
   .text-sm {
     font-size: 0.9rem;
     margin: 0.25rem 0;
   }
-  
+
   .color-gray {
     color: #666;
   }
-  
+
   .mb-1 {
     margin-bottom: 0.25rem;
   }
-  
+
   .mb-2 {
     margin-bottom: 0.5rem;
   }
-  
+
   .mb-4 {
     margin-bottom: 1rem;
   }
-  
+
   .mt-4 {
     margin-top: 1rem;
   }
