@@ -557,7 +557,7 @@ function importOldData() {
           <div class="line"></div>
           <SettingItem mainTitle="自动切换"/>
           <SettingItem title="自动切换下一个单词"
-                       desc="未开启自动切换时，当输入完成后请使用 **空格键** 切换下一个"
+                       desc="仅在 **跟写** 时生效，听写、辨认、默写均不会自动切换，需要手动按 **空格键** 切换"
           >
             <Switch v-model="settingStore.autoNextWord"/>
           </SettingItem>
@@ -621,8 +621,12 @@ function importOldData() {
             <Slider v-model="settingStore.articleSoundSpeed" :step="0.1" :min="0.5" :max="3"/>
             <span class="w-10 pl-5">{{ settingStore.articleSoundSpeed }}</span>
           </SettingItem>
-        </div>
 
+          <div class="line"></div>
+          <SettingItem title="输入时忽略符号/数字">
+            <Switch v-model="settingStore.ignoreSymbol"/>
+          </SettingItem>
+        </div>
 
         <div class="body" v-if="tabIndex === 3">
           <div class="row">
@@ -682,6 +686,22 @@ function importOldData() {
         </div>
 
         <div v-if="tabIndex === 5">
+          <div class="log-item">
+            <div class="mb-2">
+              <div>
+                <div>更新日期：2025/11/14</div>
+                <div>更新内容：新增文章练习时可跳过空格：如果在单词的最后一位上，不按空格直接输入下一个字母的话，自动跳下一个单词， 按空格也自动跳下一个单词</div>
+              </div>
+            </div>
+          </div>
+          <div class="log-item">
+            <div class="mb-2">
+              <div>
+                <div>更新日期：2025/11/13</div>
+                <div>更新内容：新增文章练习时“输入时忽略符号/数字”选项</div>
+              </div>
+            </div>
+          </div>
           <div class="log-item">
             <div class="mb-2">
               <div>

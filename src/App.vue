@@ -66,7 +66,9 @@ async function init() {
 
   setTheme(settingStore.theme)
 
-  if (!settingStore.first) {
+  if (settingStore.first) {
+    set(APP_VERSION.key,APP_VERSION.version)
+  }else {
     get(APP_VERSION.key).then(r => {
       runtimeStore.isNew = r ? (APP_VERSION.version > Number(r)) : true
     })

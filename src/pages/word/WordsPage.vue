@@ -86,6 +86,8 @@ function startPractice() {
       complete: store.sdict.complete,
       wordPracticeMode: settingStore.wordPracticeMode
     })
+    //把是否是第一次设置为false
+    settingStore.first = false
     nav('practice-words/' + store.sdict.id, {}, {taskWords: currentStudy})
   } else {
     window.umami?.track('no-dict')
