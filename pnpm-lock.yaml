@@ -75,6 +75,9 @@ importers:
       '@iconify-json/icon-park-solid':
         specifier: ^1.2.4
         version: 1.2.4
+      '@iconify-json/ix':
+        specifier: ^1.2.10
+        version: 1.2.10
       '@iconify-json/material-symbols':
         specifier: ^1.2.33
         version: 1.2.33
@@ -513,6 +516,9 @@ packages:
 
   '@iconify-json/icon-park-solid@1.2.4':
     resolution: {integrity: sha512-030MChSP6lCY7N+U5J5R7YguHTGcm7qQEI/ivBjk77El/i8yJatoj568cwwXGM8c6HEU/kIxEE4m3O/6w0WBGg==}
+
+  '@iconify-json/ix@1.2.10':
+    resolution: {integrity: sha512-2NMqsW+sMyH+cpRnRW6mVqJM/q3Mbb7UVY9NWJJEJfHGn1SbzZde/jpgEmTZe5jMJMPQGWhaCzbGsTMrFim+3Q==}
 
   '@iconify-json/material-symbols@1.2.33':
     resolution: {integrity: sha512-Bs0X1+/vpJydW63olrGh60zkR8/Y70sI14AIWaP7Z6YQXukzWANH4q3I0sIPklbIn1oL6uwLvh0zQyd6Vh79LQ==}
@@ -4142,6 +4148,10 @@ snapshots:
       '@iconify/types': 2.0.0
 
   '@iconify-json/icon-park-solid@1.2.4':
+    dependencies:
+      '@iconify/types': 2.0.0
+
+  '@iconify-json/ix@1.2.10':
     dependencies:
       '@iconify/types': 2.0.0
 

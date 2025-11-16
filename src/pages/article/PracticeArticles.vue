@@ -1,6 +1,6 @@
 <script setup lang="ts">
 
-import { computed, onMounted, onUnmounted, provide, watch, nextTick } from "vue";
+import { computed, onMounted, onUnmounted, provide, watch } from "vue";
 import { useBaseStore } from "@/stores/base.ts";
 import { emitter, EventKey, useEvents } from "@/utils/eventBus.ts";
 import { useSettingStore } from "@/stores/setting.ts";
@@ -34,7 +34,7 @@ import { useRoute, useRouter } from "vue-router";
 import PracticeLayout from "@/components/PracticeLayout.vue";
 import ArticleAudio from "@/pages/article/components/ArticleAudio.vue";
 import VolumeSetting from "@/pages/article/components/VolumeSetting.vue";
-import { CAN_REQUEST, DICT_LIST, PracticeSaveArticleKey } from "@/config/env.ts";
+import { AppEnv, DICT_LIST, PracticeSaveArticleKey } from "@/config/env.ts";
 import { addStat, setDictProp } from "@/apis";
 import { useRuntimeStore } from "@/stores/runtime.ts";
 
@@ -278,7 +278,7 @@ async function complete() {
     wrong: statStore.wrong,
   }
 
-  if (CAN_REQUEST) {
+  if (AppEnv.CAN_REQUEST) {
     let res = await addStat({ ...data, type: 'article' })
     if (!res.success) {
       Toast.error(res.msg)
@@ -361,7 +361,7 @@ async function changeArticle(val: ArticleItem) {
     store.sbook.lastLearnIndex = rIndex
     getCurrentPractice()
 
-    if (CAN_REQUEST) {
+    if (AppEnv.CAN_REQUEST) {
       let res = await setDictProp(null, store.sbook)
       if (!res.success) {
         Toast.error(res.msg)
@@ -457,26 +457,43 @@ const currentPractice = computed(() => {
 provide('currentPractice', currentPractice)
 </script>
 <template>
-  <PracticeLayout v-loading="loading" panelLeft="var(--article-panel-margin-left)">
+  <PracticeLayout
+      v-loading="loading"
+      panelLeft="var(--article-panel-margin-left)">
     <template v-slot:practice>
-      <TypingArticle ref="typingArticleRef" @wrong="wrong" @next="next" @nextWord="nextWord" @play="play2"
-        @replay="setArticle(articleData.article)" @complete="complete" :article="articleData.article" />
+      <TypingArticle
+          ref="typingArticleRef"
+          @wrong="wrong"
+          @next="next"
+          @nextWord="nextWord"
+          @play="play2"
+          @replay="setArticle(articleData.article)"
+          @complete="complete"
+          :article="articleData.article"
+      />
     </template>
     <template v-slot:panel>
-      <Panel :style="{ width: 'var(--article-panel-width)' }">
+      <Panel :style="{width:'var(--article-panel-width)'}">
         <template v-slot:title>
-          <span>{{
-            store.sbook.name
-          }} ({{ store.sbook.lastLearnIndex + 1 }} / {{ articleData.list.length }})</span>
+            <span>{{
+                store.sbook.name
+              }} ({{ store.sbook.lastLearnIndex + 1 }} / {{ articleData.list.length }})</span>
         </template>
         <div class="panel-page-item pl-4">
-          <ArticleList :isActive="settingStore.showPanel" :static="false" :show-translate="settingStore.translate"
-            @click="changeArticle" :active-id="articleData.article.id" :list="articleData.list">
-            <template v-slot:suffix="{ item, index }">
-              <BaseIcon :class="!isArticleCollect(item) ? 'collect' : 'fill'" @click.stop="toggleArticleCollect(item)"
-                :title="!isArticleCollect(item) ? '收藏' : '取消收藏'">
-                <IconFluentStar16Regular v-if="!isArticleCollect(item)" />
-                <IconFluentStar16Filled v-else />
+          <ArticleList
+              :isActive="settingStore.showPanel"
+              :static="false"
+              :show-translate="settingStore.translate"
+              @click="changeArticle"
+              :active-id="articleData.article.id"
+              :list="articleData.list ">
+            <template v-slot:suffix="{item,index}">
+              <BaseIcon
+                  :class="!isArticleCollect(item) ? 'collect' : 'fill'"
+                  @click.stop="toggleArticleCollect(item)"
+                  :title="!isArticleCollect(item) ? '收藏' : '取消收藏'">
+                <IconFluentStar16Regular v-if="!isArticleCollect(item)"/>
+                <IconFluentStar16Filled v-else/>
               </BaseIcon>
             </template>
           </ArticleList>
@@ -485,9 +502,12 @@ provide('currentPractice', currentPractice)
     </template>
     <template v-slot:footer>
       <div class="footer">
-        <Tooltip :title="settingStore.showToolbar ? '收起' : '展开'">
-          <IconFluentChevronLeft20Filled @click="settingStore.showToolbar = !settingStore.showToolbar" class="arrow"
-            :class="!settingStore.showToolbar && 'down'" color="#999" />
+        <Tooltip :title="settingStore.showToolbar?'收起':'展开'">
+          <IconFluentChevronLeft20Filled
+              @click="settingStore.showToolbar = !settingStore.showToolbar"
+              class="arrow"
+              :class="!settingStore.showToolbar && 'down'"
+              color="#999"/>
         </Tooltip>
         <div class="bottom">
           <div class="flex justify-between items-center gap-2">
@@ -506,7 +526,7 @@ provide('currentPractice', currentPractice)
                 <div class="num center gap-1">
                   {{ statStore.total }}
                   <Tooltip>
-                    <IconFluentQuestionCircle20Regular width="18" />
+                    <IconFluentQuestionCircle20Regular width="18"/>
                     <template #reference>
                       <div>
                         统计词数{{ settingStore.ignoreSimpleWord ? '不包含' : '包含' }}简单词，不包含已掌握
@@ -519,29 +539,40 @@ provide('currentPractice', currentPractice)
                 <div class="name">单词总数</div>
               </div>
             </div>
-            <ArticleAudio ref="audioRef" :article="articleData.article" :autoplay="settingStore.articleAutoPlayNext"
-              @ended="settingStore.articleAutoPlayNext && next()" @update-speed="handleSpeedUpdate"
-              @update-volume="handleVolumeUpdate"></ArticleAudio>
+            <ArticleAudio
+                ref="audioRef"
+                :article="articleData.article"
+                :autoplay="settingStore.articleAutoPlayNext"
+                @ended="settingStore.articleAutoPlayNext && next()"
+                @update-speed="handleSpeedUpdate"
+                @update-volume="handleVolumeUpdate"
+            ></ArticleAudio>
             <div class="flex flex-col items-center justify-center gap-1">
               <div class="flex gap-2 center">
-                <VolumeSetting />
-                <BaseIcon :title="`下一句(${settingStore.shortcutKeyMap[ShortcutKey.Next]})`" @click="skip">
-                  <IconFluentArrowBounce20Regular class="transform-rotate-180" />
+                <VolumeSetting/>
+                <BaseIcon
+                    :title="`下一句(${settingStore.shortcutKeyMap[ShortcutKey.Next]})`"
+                    @click="skip">
+                  <IconFluentArrowBounce20Regular class="transform-rotate-180"/>
                 </BaseIcon>
-                <BaseIcon :title="`重听(${settingStore.shortcutKeyMap[ShortcutKey.PlayWordPronunciation]})`"
-                  @click="play">
-                  <IconFluentReplay20Regular />
+                <BaseIcon
+                    :title="`重听(${settingStore.shortcutKeyMap[ShortcutKey.PlayWordPronunciation]})`"
+                    @click="play">
+                  <IconFluentReplay20Regular/>
                 </BaseIcon>
-                <BaseIcon @click="settingStore.dictation = !settingStore.dictation"
-                  :title="`开关默写模式(${settingStore.shortcutKeyMap[ShortcutKey.ToggleDictation]})`">
-                  <IconFluentEyeOff16Regular v-if="settingStore.dictation" />
-                  <IconFluentEye16Regular v-else />
+                <BaseIcon
+                    @click="settingStore.dictation = !settingStore.dictation"
+                    :title="`开关默写模式(${settingStore.shortcutKeyMap[ShortcutKey.ToggleDictation]})`"
+                >
+                  <IconFluentEyeOff16Regular v-if="settingStore.dictation"/>
+                  <IconFluentEye16Regular v-else/>
                 </BaseIcon>
 
-                <BaseIcon :title="`开关释义显示(${settingStore.shortcutKeyMap[ShortcutKey.ToggleShowTranslate]})`"
-                  @click="settingStore.translate = !settingStore.translate">
-                  <IconFluentTranslate16Regular v-if="settingStore.translate" />
-                  <IconFluentTranslateOff16Regular v-else />
+                <BaseIcon
+                    :title="`开关释义显示(${settingStore.shortcutKeyMap[ShortcutKey.ToggleShowTranslate]})`"
+                    @click="settingStore.translate = !settingStore.translate">
+                  <IconFluentTranslate16Regular v-if="settingStore.translate"/>
+                  <IconFluentTranslateOff16Regular v-else/>
                 </BaseIcon>
 
                 <!--              <BaseIcon-->
@@ -549,9 +580,10 @@ provide('currentPractice', currentPractice)
                 <!--                  icon="tabler:edit"-->
                 <!--                  @click="emitter.emit(ShortcutKey.EditArticle)"-->
                 <!--              />-->
-                <BaseIcon @click="settingStore.showPanel = !settingStore.showPanel"
-                  :title="`面板(${settingStore.shortcutKeyMap[ShortcutKey.TogglePanel]})`">
-                  <IconFluentTextListAbcUppercaseLtr20Regular />
+                <BaseIcon
+                    @click="settingStore.showPanel = !settingStore.showPanel"
+                    :title="`面板(${settingStore.shortcutKeyMap[ShortcutKey.TogglePanel]})`">
+                  <IconFluentTextListAbcUppercaseLtr20Regular/>
                 </BaseIcon>
               </div>
             </div>
@@ -561,12 +593,17 @@ provide('currentPractice', currentPractice)
     </template>
   </PracticeLayout>
 
-  <EditSingleArticleModal v-model="showEditArticle" :article="editArticle" @save="saveArticle" />
+  <EditSingleArticleModal
+      v-model="showEditArticle"
+      :article="editArticle"
+      @save="saveArticle"
+  />
 
-  <ConflictNotice />
+  <ConflictNotice/>
 </template>
 
 <style scoped lang="scss">
+
 .footer {
   width: var(--article-toolbar-width);
 

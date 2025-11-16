@@ -1,11 +1,13 @@
 <script lang="jsx">
 import {Teleport, Transition} from 'vue'
+import BaseButton from "@/components/BaseButton.vue";
 
 export default {
   name: "PopConfirm",
   components: {
     Teleport,
-    Transition
+    Transition,
+    BaseButton
   },
   props: {
     title: {
@@ -60,18 +62,18 @@ export default {
   render() {
     let Vnode = this.$slots.default()[0]
     return (
-        <div class="pop-confirm">
+        <div class="pop-confirm leading-none">
           <Teleport to="body">
-            <Transition>
+            <Transition name="fade">
               {
                   this.show && (
-                      <div ref="tip" class="pop-confirm-content">
-                        <div class="text">
+                      <div ref="tip" class="pop-confirm-content shadow-2xl">
+                        <div class="w-50">
                           {this.title}
                         </div>
                         <div class="options">
-                          <div onClick={() => this.show = false}>取消</div>
-                          <div class="main" onClick={() => this.confirm()}>确认</div>
+                          <BaseButton type="info" size="small" onClick={() => this.show = false}>取消</BaseButton>
+                          <BaseButton size="small" onClick={() => this.confirm()}>确认</BaseButton>
                         </div>
                       </div>
                   )
@@ -85,43 +87,18 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
-$bg-color: rgb(226, 226, 226);
-
 .pop-confirm-content {
   position: fixed;
   background: var(--color-tooltip-bg);
   padding: 1rem;
-  border-radius: .3rem;
+  border-radius: .6rem;
   transform: translate(-50%, calc(-100% - .6rem));
-  box-shadow: 0 0 6px 1px var(--color-tooltip-shadow);
   z-index: 999;
 
-  .text {
-    color: var(--color-font-1);
-    text-align: start;
-    font-size: 1rem;
-    width: 9rem;
-    min-width: 9rem;
-  }
 
   .options {
     margin-top: .9rem;
-    display: flex;
-    justify-content: flex-end;
-    align-items: center;
-    gap: .7rem;
-    font-size: .9rem;
-
-    div {
-      cursor: pointer;
-    }
-
-    .main {
-      color: gray;
-      background: $bg-color;
-      padding: .2rem .6rem;
-      border-radius: .24rem;
-    }
+    text-align: right;
   }
 }
 </style>
