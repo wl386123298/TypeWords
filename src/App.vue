@@ -77,10 +77,10 @@ async function init() {
 
 onMounted(init)
 
-let transitionName = $ref('go')
-const route = useRoute()
-watch(() => route.path, (to, from) => {
-  return transitionName = ''
+// let transitionName = $ref('go')
+// const route = useRoute()
+// watch(() => route.path, (to, from) => {
+//   return transitionName = ''
   // console.log('watch', to, from)
   // //footer下面的5个按钮，对跳不要用动画
   // let noAnimation = [
@@ -97,7 +97,7 @@ watch(() => route.path, (to, from) => {
   // const fromDepth = routes.findIndex(v => v.path === from)
   // transitionName = toDepth > fromDepth ? 'go' : 'back'
   // console.log('transitionName', transitionName, toDepth, fromDepth)
-})
+// })
 </script>
 
 <template>

@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Migrate Data</title>
+</head>
+<body>
+<script>
+  async function readIndexedDB() {
+    return new Promise((resolve, reject) => {
+      const request = indexedDB.open('type-words', 1); // 你的数据库名
+      request.onsuccess = function (event) {
+        const db = event.target.result;
+        const tx = db.transaction(['typing-word-dict', 'typing-word-setting', 'typing-word-files'], 'readonly');
+        const result = {};
+
+        let count = 0;
+        const keys = ['typing-word-dict', 'typing-word-setting', 'typing-word-files'];
+        keys.forEach((storeName) => {
+          const store = tx.objectStore(storeName);
+          const allRequest = store.getAll();
+          allRequest.onsuccess = function (e) {
+            result[storeName] = e.target.result;
+            count++;
+            if (count === keys.length) {
+              resolve(result);
+            }
+          };
+          allRequest.onerror = function (e) {
+            result[storeName] = null;
+            count++;
+            if (count === keys.length) resolve(result);
+          };
+        });
+      };
+      request.onerror = function (e) {
+        resolve({});
+      };
+    });
+  }
+
+  // 监听 postMessage
+  window.addEventListener('message', async (e) => {
+    if (e.data && e.data.type === 'requestData') {
+      const local = {};
+      ['PracticeSaveWord', 'PracticeSaveArticle'].forEach(key => {
+        local[key] = localStorage.getItem(key) || null;
+      });
+
+      const indexed = await readIndexedDB();
+
+      // 回复新域名
+      e.source.postMessage({
+        type: 'responseData',
+        localStorageData: local,
+        indexedDBData: indexed
+      }, e.origin);
+    }
+  });
+
+</script>
+</body>
+</html>
