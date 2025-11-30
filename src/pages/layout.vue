@@ -49,10 +49,10 @@ function goHome() {
           <IconFluentCommentEdit20Regular/>
           <span v-if="settingStore.sideExpand">反馈</span>
         </div>
-<!--        <div class="row" @click="router.push('/user')">-->
-<!--          <IconFluentPerson20Regular/>-->
-<!--          <span v-if="settingStore.sideExpand">用户</span>-->
-<!--        </div>-->
+        <div class="row" @click="router.push('/user')">
+          <IconFluentPerson20Regular/>
+          <span v-if="settingStore.sideExpand">用户</span>
+        </div>
       </div>
       <div class="bottom flex justify-evenly ">
         <BaseIcon
