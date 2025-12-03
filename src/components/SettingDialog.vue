@@ -42,7 +42,7 @@ const simpleWords = $computed({
 
 <template>
   <Dialog v-model="show" title="设置">
-    <div class="setting text-lg w-200 h-[50vh] text-md flex flex-col">
+    <div class="setting text-lg w-200 h-[60vh] text-md flex flex-col">
       <div class="flex flex-1 overflow-hidden">
         <div class="left">
           <div class="tabs">
@@ -312,7 +312,7 @@ const simpleWords = $computed({
         @apply cursor-pointer flex items-center relative;
         padding: .6rem .9rem;
         border-radius: .5rem;
-        width: 10rem;
+        width: 8rem;
         gap: .6rem;
         transition: all .5s;
 

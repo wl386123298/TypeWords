@@ -32,7 +32,6 @@ import { AppEnv, DICT_LIST, Host, LIB_JS_URL, PracticeSaveWordKey, TourConfig } 
 import { myDictList } from "@/apis";
 import PracticeWordListDialog from "@/pages/word/components/PracticeWordListDialog.vue";
 import ShufflePracticeSettingDialog from "@/pages/word/components/ShufflePracticeSettingDialog.vue";
-import SettingDialog from "@/pages/word/components/SettingDialog.vue";
 
 
 const store = useBaseStore()
