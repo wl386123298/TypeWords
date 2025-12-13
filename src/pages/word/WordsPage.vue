@@ -245,8 +245,7 @@ let isNewHost = $ref(window.location.host === Host)
       2study.top 域名将在不久后停止使用
     </div>
 
-
-    <div class="card flex flex-col md:flex-row gap-8">
+    <div class="card flex flex-col md:flex-row gap-4">
       <div class="flex-1 w-full flex flex-col justify-between">
         <div class="flex gap-3">
           <div class="p-1 center rounded-full bg-white">

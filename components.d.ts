@@ -18,6 +18,7 @@ declare module 'vue' {
     BaseList: typeof import('./src/components/list/BaseList.vue')['default']
     BasePage: typeof import('./src/components/BasePage.vue')['default']
     BaseTable: typeof import('./src/components/BaseTable.vue')['default']
+    BaseTable2: typeof import('./src/components/BaseTable2.vue')['default']
     Book: typeof import('./src/components/Book.vue')['default']
     ChannelIcons: typeof import('./src/components/ChannelIcons/ChannelIcons.vue')['default']
     Checkbox: typeof import('./src/components/base/checkbox/Checkbox.vue')['default']

@@ -34,7 +34,6 @@ const base = useBaseStore()
 const router = useRouter()
 const route = useRoute()
 const isMob = isMobile()
-
 let loading = $ref(false)
 
 let list = $computed({
@@ -65,8 +64,8 @@ let wordForm = $ref(getDefaultFormWord())
 let wordFormRef = $ref()
 const wordRules = reactive({
   word: [
-    {required: true, message: '请输入单词', trigger: 'blur'},
-    {max: 100, message: '名称不能超过100个字符', trigger: 'blur'},
+    { required: true, message: '请输入单词', trigger: 'blur' },
+    { max: 100, message: '名称不能超过100个字符', trigger: 'blur' },
   ],
 })
 let studyLoading = $ref(false)
@@ -201,10 +200,9 @@ onMounted(async () => {
         let r = await _getDictDataByUrl(runtimeStore.editDict)
         runtimeStore.editDict = r
       }
-
       if (base.word.bookList.find(book => book.id === runtimeStore.editDict.id)) {
         if (AppEnv.CAN_REQUEST) {
-          let res = await detail({id: runtimeStore.editDict.id})
+          let res = await detail({ id: runtimeStore.editDict.id })
           if (res.success) {
             runtimeStore.editDict.statistics = res.data.statistics
             if (res.data.words.length) {
@@ -213,6 +211,7 @@ onMounted(async () => {
           }
         }
       }
+      list2 = runtimeStore.editDict.words
       loading = false
     }
   }
@@ -227,7 +226,7 @@ let showPracticeSettingDialog = $ref(false)
 
 const store = useBaseStore()
 const settingStore = useSettingStore()
-const {nav} = useNav()
+const { nav } = useNav()
 
 //todo 可以和首页合并
 async function startPractice(query = {}) {
@@ -244,7 +243,7 @@ async function startPractice(query = {}) {
     wordPracticeMode: settingStore.wordPracticeMode
   })
   let currentStudy = getCurrentStudyWord()
-  nav('practice-words/' + store.sdict.id, query, {taskWords: currentStudy})
+  nav('practice-words/' + store.sdict.id, query, { taskWords: currentStudy })
 }
 
 async function addMyStudyList() {
@@ -263,7 +262,6 @@ async function startTest() {
   await base.changeDict(runtimeStore.editDict)
   loading = false
   nav('word-test/' + store.sdict.id)
-
 }
 
 let exportLoading = $ref(false)
@@ -279,7 +277,7 @@ function importData(e) {
     let data = s.target.result;
     importLoading = true
     const XLSX = await loadJsLib('XLSX', LIB_JS_URL.XLSX);
-    let workbook = XLSX.read(data, {type: 'binary'});
+    let workbook = XLSX.read(data, { type: 'binary' });
     let res: any[] = XLSX.utils.sheet_to_json(workbook.Sheets['Sheet1']);
     if (res.length) {
       let words = res.map(v => {
@@ -386,7 +384,6 @@ function searchWord() {
   console.log('wordForm.word', wordForm.word)
 }
 
-
 watch(() => loading, (val) => {
   if (!val) return
   _nextTick(async () => {
@@ -398,7 +395,7 @@ watch(() => loading, (val) => {
     tour.addStep({
       id: 'step3',
       text: '点击这里开始学习',
-      attachTo: {element: '#study', on: 'bottom'},
+      attachTo: { element: '#study', on: 'bottom' },
       buttons: [
         {
           text: `下一步（3/${TourConfig.total}）`,
@@ -413,7 +410,7 @@ watch(() => loading, (val) => {
     tour.addStep({
       id: 'step4',
       text: '这里可以选择学习模式、设置学习数量、修改学习进度',
-      attachTo: {element: '#mode', on: 'bottom'},
+      attachTo: { element: '#mode', on: 'bottom' },
       beforeShowPromise() {
         return new Promise((resolve) => {
           const timer = setInterval(() => {
@@ -429,7 +426,7 @@ watch(() => loading, (val) => {
           text: `下一步（4/${TourConfig.total}）`,
           action() {
             tour.next()
-            startPractice({guide: 1})
+            startPractice({ guide: 1 })
           }
         }
       ]
@@ -441,6 +438,18 @@ watch(() => loading, (val) => {
     }
   }, 500)
 })
+
+let pageNo = $ref(1)
+let pageSize = $ref(50)
+let list2 = $ref([])
+
+async function requestList({ pageNo, pageSize }) {
+  if (AppEnv.CAN_REQUEST) {
+
+  } else {
+    return list2.slice((pageNo - 1) * pageSize, (pageNo - 1) * pageSize + pageSize)
+  }
+}
 
 
 defineRender(() => {
@@ -484,7 +493,9 @@ defineRender(() => {
                     <BaseTable
                         ref={tableRef}
                         class="h-full"
+                        request={requestList}
                         list={list}
+                        total={runtimeStore.editDict.length}
                         loading={loading}
                         onUpdate:list={e => list = e}
                         del={delWord}
@@ -564,42 +575,42 @@ defineRender(() => {
                                   modelValue={wordForm.trans}
                                   onUpdate:modelValue={e => wordForm.trans = e}
                                   placeholder="一行一个翻译，前面词性，后面内容（如n.取消）；多个翻译请换行"
-                                  autosize={{minRows: 6, maxRows: 10}}/>
+                                  autosize={{ minRows: 6, maxRows: 10 }}/>
                             </FormItem>
                             <FormItem label="例句">
                               <Textarea
                                   modelValue={wordForm.sentences}
                                   onUpdate:modelValue={e => wordForm.sentences = e}
                                   placeholder="一行原文，一行译文；多个请换两行"
-                                  autosize={{minRows: 6, maxRows: 10}}/>
+                                  autosize={{ minRows: 6, maxRows: 10 }}/>
                             </FormItem>
                             <FormItem label="短语">
                               <Textarea
                                   modelValue={wordForm.phrases}
                                   onUpdate:modelValue={e => wordForm.phrases = e}
                                   placeholder="一行原文，一行译文；多个请换两行"
-                                  autosize={{minRows: 6, maxRows: 10}}/>
+                                  autosize={{ minRows: 6, maxRows: 10 }}/>
                             </FormItem>
                             <FormItem label="同义词">
                               <Textarea
                                   modelValue={wordForm.synos}
                                   onUpdate:modelValue={e => wordForm.synos = e}
                                   placeholder="请参考已有单词格式"
-                                  autosize={{minRows: 6, maxRows: 20}}/>
+                                  autosize={{ minRows: 6, maxRows: 20 }}/>
                             </FormItem>
                             <FormItem label="同根词">
                               <Textarea
                                   modelValue={wordForm.relWords}
                                   onUpdate:modelValue={e => wordForm.relWords = e}
                                   placeholder="请参考已有单词格式"
-                                  autosize={{minRows: 6, maxRows: 20}}/>
+                                  autosize={{ minRows: 6, maxRows: 20 }}/>
                             </FormItem>
                             <FormItem label="词源">
                               <Textarea
                                   modelValue={wordForm.etymology}
                                   onUpdate:modelValue={e => wordForm.etymology = e}
                                   placeholder="请参考已有单词格式"
-                                  autosize={{minRows: 6, maxRows: 10}}/>
+                                  autosize={{ minRows: 6, maxRows: 10 }}/>
                             </FormItem>
                           </Form>
                           <div class="center">

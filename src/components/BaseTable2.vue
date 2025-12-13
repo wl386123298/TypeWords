@@ -1,6 +1,6 @@
 <script setup lang="tsx">
 
-import { nextTick, onMounted, useSlots } from "vue";
+import { nextTick, useSlots } from "vue";
 import { Sort } from "@/types/types.ts";
 import MiniDialog from "@/components/dialog/MiniDialog.vue";
 import BaseIcon from "@/components/BaseIcon.vue";
@@ -27,7 +27,6 @@ const props = withDefaults(defineProps<{
   del?: Function
   batchDel?: Function
   add?: Function
-  request?: Function
   total: number
 }>(), {
   loading: true,
@@ -37,7 +36,6 @@ const props = withDefaults(defineProps<{
   importLoading: false,
   del: () => void 0,
   add: () => void 0,
-  request: () => void 0,
   batchDel: () => void 0
 })
 
@@ -70,6 +68,7 @@ function scrollToItem(index: number) {
   })
 }
 
+
 let pageNo = $ref(1)
 let pageSize = $ref(50)
 let currentList = $computed(() => {
@@ -83,12 +82,6 @@ let currentList = $computed(() => {
 let selectIds = $ref([])
 let selectAll = $computed(() => {
   return !!selectIds.length
-})
-
-let list2 = $ref([])
-onMounted(async () => {
-  list2 = await props.request({ pageNo, pageSize })
-  console.log('list2',list2)
 })
 
 function toggleSelect(item) {
@@ -144,7 +137,6 @@ defineExpose({
   scrollToItem,
   closeImportDialog
 })
-
 defineRender(
     () => {
       const d = (item) => <Checkbox
