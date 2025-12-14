@@ -129,7 +129,6 @@ export const useBaseStore = defineStore('base', {
             }
           }
           this.setState(data)
-          set(SAVE_DICT_KEY.key, JSON.stringify({ val: shakeCommonDict(this.$state), version: SAVE_DICT_KEY.version }))
         } catch (e) {
           console.error('读取本地dict数据失败', e)
         }
