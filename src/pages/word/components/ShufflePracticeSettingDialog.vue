@@ -29,6 +29,7 @@ watch(() => model.value, (n) => {
 <template>
   <Dialog v-model="model" title="随机复习设置"
           :footer="true"
+          :padding="true"
           @ok="emit('ok',num)">
     <div class="target-modal color-main">
       <div class="flex gap-4 items-end  mb-2">
@@ -52,7 +53,6 @@ watch(() => model.value, (n) => {
 
 .target-modal {
   width: 30rem;
-  padding: 0 var(--space);
 
   .lh {
     color: rgb(176, 116, 211)

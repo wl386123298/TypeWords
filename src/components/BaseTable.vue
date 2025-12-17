@@ -1,6 +1,6 @@
 <script setup lang="tsx">
 
-import { nextTick, onMounted, useSlots } from "vue";
+import { nextTick, useSlots } from "vue";
 import { Sort } from "@/types/types.ts";
 import MiniDialog from "@/components/dialog/MiniDialog.vue";
 import BaseIcon from "@/components/BaseIcon.vue";
@@ -16,6 +16,7 @@ import Dialog from "@/components/dialog/Dialog.vue";
 import BaseInput from "@/components/base/BaseInput.vue";
 import { Host } from "@/config/env.ts";
 
+let list = defineModel('list')
 
 const props = withDefaults(defineProps<{
   loading?: boolean
@@ -26,7 +27,6 @@ const props = withDefaults(defineProps<{
   del?: Function
   batchDel?: Function
   add?: Function
-  request?: Function
   total: number
 }>(), {
   loading: true,
@@ -36,19 +36,16 @@ const props = withDefaults(defineProps<{
   importLoading: false,
   del: () => void 0,
   add: () => void 0,
-  request: () => void 0,
   batchDel: () => void 0
 })
 
 const emit = defineEmits<{
-  add: []
   click: [val: {
     item: any,
     index: number
   }],
   importData: [e: Event]
   exportData: []
-  sort: [type: Sort,pageNo: number,pageSize: number]
 }>()
 
 let listRef: any = $ref()
@@ -71,14 +68,21 @@ function scrollToItem(index: number) {
   })
 }
 
+
 let pageNo = $ref(1)
 let pageSize = $ref(50)
+let currentList = $computed(() => {
+  if (searchKey) {
+    return list.value.filter(v => v.word.includes(searchKey))
+  }
+  if (!props.showPagination) return list.value
+  return list.value.slice((pageNo - 1) * pageSize, (pageNo - 1) * pageSize + pageSize)
+})
 
 let selectIds = $ref([])
 let selectAll = $computed(() => {
   return !!selectIds.length
 })
-
 
 function toggleSelect(item) {
   let rIndex = selectIds.findIndex(v => v === item.id)
@@ -93,10 +97,11 @@ function toggleSelectAll() {
   if (selectAll) {
     selectIds = []
   } else {
-    selectIds = list2.map(v => v.id)
+    selectIds = currentList.map(v => v.id)
   }
 }
 
+let searchKey = $ref('')
 let showSortDialog = $ref(false)
 let showSearchInput = $ref(false)
 let showImportDialog = $ref(false)
@@ -104,10 +109,13 @@ let showImportDialog = $ref(false)
 const closeImportDialog = () => showImportDialog = false
 
 function sort(type: Sort) {
-  if ([Sort.reverse, Sort.random].includes(type)) {
-    emit('sort', type,params.pageNo,params.pageSize)
-  }else{
-    emit('sort', type,1,params.total)
+  if (type === Sort.reverse) {
+    Toast.success('已翻转排序')
+    list.value = reverse(cloneDeep(list.value))
+  }
+  if (type === Sort.random) {
+    Toast.success('已随机排序')
+    list.value = shuffle(cloneDeep(list.value))
   }
   showSortDialog = false
 }
@@ -118,8 +126,7 @@ function handleBatchDel() {
 }
 
 function handlePageNo(e) {
-  params.pageNo = e
-  getData()
+  pageNo = e
   scrollToTop()
 }
 
@@ -128,52 +135,8 @@ const s = useSlots()
 defineExpose({
   scrollToBottom,
   scrollToItem,
-  closeImportDialog,
-  getData
+  closeImportDialog
 })
-
-
-let list2 = $ref([])
-let loading2 = $ref(false)
-
-let params = $ref({
-  pageNo: 1,
-  pageSize: 50,
-  total: 0,
-  sortType: null,
-  searchKey: ''
-})
-
-function search(key: string) {
-  console.log('key',key)
-  if(!params.searchKey) {
-    params.pageNo = 1
-  }
-  params.searchKey = key
-  getData() 
-}
-
-function cancelSearch() {
-  params.searchKey = ''
-  showSearchInput = false
-  getData()
-} 
-
-async function getData() {
-  loading2 = true
-  console.log('params',params);
-  let {list, total} = await props.request(params)
-  console.log('list',list)
-  list2 = list
-  params.total = total
-  loading2 = false
-}
-
-onMounted(async () => {
-  getData()
-})
-
-
 defineRender(
     () => {
       const d = (item) => <Checkbox
@@ -190,8 +153,8 @@ defineRender(
                         <div class="flex gap-4">
                           <BaseInput
                               clearable
-                              modelValue={params.searchKey}
-                              onUpdate:modelValue={debounce(e => search(e), 500)}
+                              modelValue={searchKey}
+                              onUpdate:modelValue={debounce(e => searchKey = e)}
                               class="flex-1"
                               autofocus>
                             {{
@@ -200,17 +163,17 @@ defineRender(
                               />
                             }}
                           </BaseInput>
-                          <BaseButton onClick={cancelSearch}>取消</BaseButton>
+                          <BaseButton onClick={() => (showSearchInput = false, searchKey = '')}>取消</BaseButton>
                         </div>
                     ) : (
                         <div class="flex justify-between">
                           <div class="flex gap-2 items-center">
                             <Checkbox
-                                disabled={!list2.length}
+                                disabled={!currentList.length}
                                 onChange={() => toggleSelectAll()}
                                 modelValue={selectAll}
                                 size="large"/>
-                            <span>{selectIds.length} / {params.total}</span>
+                            <span>{selectIds.length} / {list.value.length}</span>
                           </div>
 
                           <div class="flex gap-2 relative">
@@ -238,19 +201,19 @@ defineRender(
                               {props.exportLoading ? <IconEosIconsLoading/> : <IconPhExportLight/>}
                             </BaseIcon>
                             <BaseIcon
-                                onClick={() => emit('add')}
+                                onClick={props.add}
                                 title="添加单词">
                               <IconFluentAdd20Regular/>
                             </BaseIcon>
                             <BaseIcon
-                                disabled={!list2.length}
+                                disabled={!currentList.length}
                                 title="改变顺序"
                                 onClick={() => showSortDialog = !showSortDialog}
                             >
                               <IconFluentArrowSort20Regular/>
                             </BaseIcon>
                             <BaseIcon
-                                disabled={!list2.length}
+                                disabled={!currentList.length}
                                 onClick={() => showSearchInput = !showSearchInput}
                                 title="搜索">
                               <IconFluentSearch20Regular/>
@@ -263,12 +226,10 @@ defineRender(
                               <div class="mini-row-title">
                                 列表顺序设置
                               </div>
-                              <div class="flex flex-col gap2 btn-no-margin">
-                                <BaseButton onClick={() => sort(Sort.reverse)}>翻转当前页</BaseButton>
-                                <BaseButton onClick={() => sort(Sort.reverseAll)}>翻转所有</BaseButton>
-                                <div class="line"></div>
-                                <BaseButton onClick={() => sort(Sort.random)}>随机当前页</BaseButton>
-                                <BaseButton onClick={() => sort(Sort.randomAll)}>随机所有</BaseButton>
+                              <div class="mini-row">
+                                <BaseButton size="small" onClick={() => sort(Sort.reverse)}>翻转
+                                </BaseButton>
+                                <BaseButton size="small" onClick={() => sort(Sort.random)}>随机</BaseButton>
                               </div>
                             </MiniDialog>
                           </div>
@@ -278,15 +239,15 @@ defineRender(
                 </div>
             }
             {
-              loading2 ?
+              props.loading ?
                   <div class="h-full w-full center text-4xl">
                     <IconEosIconsLoading color="gray"/>
                   </div>
-                  : list2.length ? (
+                  : currentList.length ? (
                       <>
                         <div class="flex-1 overflow-auto"
                              ref={e => listRef = e}>
-                          {list2.map((item, index) => {
+                          {currentList.map((item, index) => {
                             return (
                                 <div class="list-item-wrapper"
                                      key={item.word}
@@ -299,13 +260,13 @@ defineRender(
                         {
                             props.showPagination && <div class="flex justify-end">
                               <Pagination
-                                  currentPage={params.pageNo}
+                                  currentPage={pageNo}
                                   onUpdate:current-page={handlePageNo}
-                                  pageSize={params.pageSize}
-                                  onUpdate:page-size={(e) => params.pageSize = e}
+                                  pageSize={pageSize}
+                                  onUpdate:page-size={(e) => pageSize = e}
                                   pageSizes={[20, 50, 100, 200]}
-                                  layout="prev, pager, next, total"
-                                  total={params.total}/>
+                                  layout="prev, pager, next"
+                                  total={props.total}/>
                             </div>
                         }
                       </>
@@ -347,4 +308,6 @@ defineRender(
     }
 )
 </script>
-<style scoped lang="scss"></style>
+<style scoped lang="scss">
+
+</style>

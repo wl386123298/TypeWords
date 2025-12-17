@@ -28,6 +28,7 @@
   --toolbar-width: 50rem;
   --panel-width: 24rem;
 
+  --modal-padding: 1.3rem;
   --space: 0.9rem;
   --stat-gap: 1rem;
   --shadow: rgba(0, 0, 0, 0.08) 0px 4px 12px;
@@ -245,7 +246,7 @@ body {
   display: flex;
   flex-direction: column;
 
-  &>.page-content {
+  & > .page-content {
     padding: 10rem;
     box-sizing: border-box;
     overflow: auto;
@@ -532,6 +533,6 @@ a {
 
 .btn-no-margin {
   .base-button + .base-button {
-    margin-left: 0!important;
+    margin-left: 0 !important;
   }
 }

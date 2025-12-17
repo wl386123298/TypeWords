@@ -43,28 +43,21 @@ import { useExport } from "@/hooks/export.ts";
 import MigrateDialog from "@/components/MigrateDialog.vue";
 import Log from "@/pages/setting/Log.vue";
 import About from "@/components/About.vue";
+import CommonSetting from "@/components/setting/CommonSetting.vue";
+import ArticleSettting from "@/components/setting/ArticleSettting.vue";
+import WordSetting from "@/components/setting/WordSetting.vue";
 
 const emit = defineEmits<{
   toggleDisabledDialogEscKey: [val: boolean]
 }>()
 
-const tabIndex = $ref(4)
+const tabIndex = $ref(0)
 const settingStore = useSettingStore()
 const runtimeStore = useRuntimeStore()
 const store = useBaseStore()
 
 //@ts-ignore
 const gitLastCommitHash = ref(LATEST_COMMIT_HASH);
-const simpleWords = $computed({
-  get: () => store.simpleWords.join(','),
-  set: v => {
-    try {
-      store.simpleWords = v.split(',');
-    } catch (e) {
-
-    }
-  }
-})
 
 let editShortcutKey = $ref('')
 
@@ -311,6 +304,18 @@ function transferOk() {
       <div class="flex flex-1 overflow-hidden gap-4">
         <div class="left">
           <div class="tabs">
+            <div class="tab" :class="tabIndex === 0 && 'active'" @click="tabIndex = 0">
+              <IconFluentSettings20Regular width="20"/>
+              <span>通用</span>
+            </div>
+            <div class="tab" :class="tabIndex === 1 && 'active'" @click="tabIndex = 1">
+              <IconFluentTextUnderlineDouble20Regular width="20"/>
+              <span>单词</span>
+            </div>
+            <div class="tab" :class="tabIndex === 2 && 'active'" @click="tabIndex = 2">
+              <IconFluentBookLetter20Regular width="20"/>
+              <span>文章</span>
+            </div>
             <div class="tab" :class="tabIndex === 4 && 'active'" @click="tabIndex = 4">
               <IconFluentDatabasePerson20Regular width="20"/>
               <span>数据管理</span>
@@ -338,6 +343,11 @@ function transferOk() {
         </div>
         <div class="col-line"></div>
         <div class="flex-1  overflow-y-auto overflow-x-hidden pr-4 content">
+
+          <CommonSetting v-if="tabIndex === 0"/>
+          <WordSetting v-if="tabIndex === 1"/>
+          <ArticleSettting v-if="tabIndex === 2"/>
+
 
           <div class="body" v-if="tabIndex === 3">
             <div class="row">

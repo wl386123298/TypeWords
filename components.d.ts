@@ -10,6 +10,7 @@ declare module 'vue' {
   export interface GlobalComponents {
     About: typeof import('./src/components/About.vue')['default']
     ArticleList: typeof import('./src/components/list/ArticleList.vue')['default']
+    ArticleSettting: typeof import('./src/components/setting/ArticleSettting.vue')['default']
     Audio: typeof import('./src/components/base/Audio.vue')['default']
     BackIcon: typeof import('./src/components/BackIcon.vue')['default']
     BaseButton: typeof import('./src/components/BaseButton.vue')['default']
@@ -23,6 +24,7 @@ declare module 'vue' {
     ChannelIcons: typeof import('./src/components/ChannelIcons/ChannelIcons.vue')['default']
     Checkbox: typeof import('./src/components/base/checkbox/Checkbox.vue')['default']
     Close: typeof import('./src/components/icon/Close.vue')['default']
+    CommonSetting: typeof import('./src/components/setting/CommonSetting.vue')['default']
     ConflictNotice: typeof import('./src/components/ConflictNotice.vue')['default']
     DeleteIcon: typeof import('./src/components/icon/DeleteIcon.vue')['default']
     Dialog: typeof import('./src/components/dialog/Dialog.vue')['default']
@@ -159,5 +161,6 @@ declare module 'vue' {
     WeChat: typeof import('./src/components/ChannelIcons/WeChat.vue')['default']
     WordItem: typeof import('./src/components/WordItem.vue')['default']
     WordList: typeof import('./src/components/list/WordList.vue')['default']
+    WordSetting: typeof import('./src/components/setting/WordSetting.vue')['default']
   }
 }

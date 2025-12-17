@@ -36,7 +36,7 @@ import ArticleAudio from "@/pages/article/components/ArticleAudio.vue";
 import { AppEnv, DICT_LIST, LIB_JS_URL, PracticeSaveArticleKey, TourConfig } from "@/config/env.ts";
 import { addStat, setUserDictProp } from "@/apis";
 import { useRuntimeStore } from "@/stores/runtime.ts";
-import SettingDialog from "@/components/SettingDialog.vue";
+import SettingDialog from "@/components/setting/SettingDialog.vue";
 
 const store = useBaseStore()
 const runtimeStore = useRuntimeStore()

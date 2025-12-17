@@ -18,8 +18,8 @@ let showTranslate = $ref(false)
 </script>
 
 <template>
-  <Dialog v-model="model" title="任务">
-    <div class="px-4 pb-4 h-80vh flex gap-4">
+  <Dialog v-model="model" padding title="任务">
+    <div class="pb-4 h-80vh flex gap-4">
       <div class="h-full flex flex-col gap-2">
         <div class="flex justify-between items-center">
           <span class="title">新词 {{data.new.length}}</span>
