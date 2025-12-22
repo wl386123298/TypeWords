@@ -592,16 +592,20 @@ defineRender(() => {
               >
                 编辑
               </BaseButton>
+              <BaseButton loading={studyLoading || loading} type="info" onClick={startTest}>
+                测试
+              </BaseButton>
               <BaseButton id="study" loading={studyLoading || loading} onClick={addMyStudyList}>
                 学习
               </BaseButton>
-              <BaseButton loading={studyLoading || loading} onClick={startTest}>
-                测试
-              </BaseButton>
             </div>
           </div>
-          <div class="text-lg  mt-2">介绍：{runtimeStore.editDict.description}</div>
-          <div class="line my-3"></div>
+          {dict.description && (
+            <>
+              <div class="text-lg  mt-2">介绍：{dict.description}</div>
+              <div class="line my-3"></div>
+            </>
+          )}
 
           {/* 移动端标签页导航 */}
           {isMob && isOperate && (
