@@ -131,10 +131,8 @@ onMounted(() => {
 
 onUnmounted(() => {
   let cache = getPracticeWordCache()
-  //如果有缓存，则更新花费的时间；因为用户不输入不会保存数据，但有可能不是初始阶段（比如默写，听写等），所以需要更新花费的时间
   if (cache) {
-    cache.statStoreData.spend = statStore.spend
-    setPracticeWordCache(cache)
+    savePracticeData()
   }
   timer && clearInterval(timer)
 })
