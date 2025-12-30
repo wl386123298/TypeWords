@@ -544,8 +544,8 @@ provide('currentPractice', currentPractice)
                 <div class="name">记录</div>
               </div>
               <div class="row">
-                <div class="num">{{statStore.spend }}分钟</div>
-                <!-- <div class="num">{{ Math.floor(statStore.spend / 1000 / 60) }}分钟</div> -->
+<!--                <div class="num">{{statStore.spend }}分钟</div>-->
+                 <div class="num">{{ Math.floor(statStore.spend / 1000 / 60) }}分钟</div>
                 <div class="line"></div>
                 <div class="name">时间</div>
               </div>

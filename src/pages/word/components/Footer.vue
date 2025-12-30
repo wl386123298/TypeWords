@@ -318,7 +318,7 @@ const stages = $computed(() => {
     </div>
     <div class="progress-wrap flex gap-3 items-center color-gray">
       <span class="shrink-0">{{ status }}</span>
-      <Progress :percentage="progress" :stroke-width="8" color="#69b1ff" :show-text="false" />
+      <StageProgress :stages="stages" />
       <div class="num">{{ `${practiceData.index + 1}/${practiceData.words.length}` }}</div>
     </div>
   </div>

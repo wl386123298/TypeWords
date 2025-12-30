@@ -262,17 +262,6 @@ calcWeekList() // 新增：计算本周学习记录
             {{ dictIsEnd ? '从头开始练习' : '再来一组' }}
           </div>
         </BaseButton>
-        <!--        todo 感觉这里的继续默写有问题，应该是当前组，而不是下一组-->
-        <BaseButton
-          v-if="settingStore.wordPracticeMode !== WordPracticeMode.Review"
-          :keyboard="settingStore.shortcutKeyMap[ShortcutKey.NextRandomWrite]"
-          @click="options(EventKey.randomWrite)"
-        >
-          <div class="center gap-2">
-            <IconFluentPen20Regular />
-            继续默写
-          </div>
-        </BaseButton>
         <BaseButton @click="$router.back">
           <div class="center gap-2">
             <IconFluentHome20Regular />

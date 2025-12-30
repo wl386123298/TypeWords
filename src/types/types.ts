@@ -120,7 +120,6 @@ export enum ShortcutKey {
   ToggleConciseMode = 'ToggleConciseMode',
   TogglePanel = 'TogglePanel',
   RandomWrite = 'RandomWrite',
-  NextRandomWrite = 'NextRandomWrite',
   KnowWord = 'KnowWord',
   UnknownWord = 'UnknownWord',
 }
@@ -143,7 +142,6 @@ export const DefaultShortcutKeyMap = {
   [ShortcutKey.ToggleConciseMode]: 'Ctrl+M',
   [ShortcutKey.TogglePanel]: 'Ctrl+L',
   [ShortcutKey.RandomWrite]: 'Ctrl+R',
-  [ShortcutKey.NextRandomWrite]: 'Ctrl+Shift+R',
   [ShortcutKey.KnowWord]: '1',
   [ShortcutKey.UnknownWord]: '2',
 }

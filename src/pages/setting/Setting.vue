@@ -457,7 +457,7 @@ function transferOk() {
 
 <style scoped lang="scss">
 .col-line {
-  border-right: 2px solid gainsboro;
+  border-right: 2px solid var(--color-line);
 }
 
 .setting {

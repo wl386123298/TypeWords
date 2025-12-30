@@ -223,9 +223,9 @@ function handleChange(e: any) {
             return v.map((w, j) => {
               for (let k = 0; k < lrcList.length; k++) {
                 let s = lrcList[k]
-                let d = Comparison.default.cosine.similarity(w.text, s.text)
-                d = Comparison.default.levenshtein.similarity(w.text, s.text)
-                d = Comparison.default.longestCommonSubsequence.similarity(w.text, s.text)
+                // let d = Comparison.default.cosine.similarity(w.text, s.text)
+                // d = Comparison.default.levenshtein.similarity(w.text, s.text)
+               let d = Comparison.default.longestCommonSubsequence.similarity(w.text, s.text)
                 // d = Comparison.default.metricLcs.similarity(w.text, s.text)
                 // console.log(w.text, s.text, d)
                 if (d >= 0.8) {

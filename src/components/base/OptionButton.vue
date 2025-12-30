@@ -6,9 +6,7 @@
       <slot></slot>
     </div>
     <div class="relative group">
-      <div
-        class="more w-10 rounded-r-lg h-full center border-solid border-1 border-l-gray/50 border-transparent box-border transition-all duration-300"
-      >
+      <div class="more w-10 rounded-r-lg h-full center box-border transition-all duration-300">
         <IconFluentChevronDown20Regular />
       </div>
       <div
@@ -34,6 +32,8 @@
 .primary-btn {
   .more {
     background: var(--btn-primary);
+    border: 1.5px solid transparent;
+    border-left-color: #69788e;
     &:hover {
       background: var(--btn-primary-hover);
     }
@@ -44,7 +44,8 @@
   .more {
     background: var(--btn-orange);
     color: black;
-    border-left-color: black;
+    border: 1px solid transparent;
+    border-left-color: #cfb752;
     &:hover {
       background: var(--btn-orange-hover);
     }

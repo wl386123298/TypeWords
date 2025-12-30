@@ -58,7 +58,7 @@ let show = $ref(false)
     flex-direction: column;
     justify-content: space-between;
     align-items: center;
-    border-right: 1px solid gainsboro;
+    border-right: 2px solid var(--color-line);
 
     .tabs {
       padding: 1rem;

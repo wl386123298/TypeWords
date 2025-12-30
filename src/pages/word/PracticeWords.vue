@@ -16,22 +16,10 @@ import {
   WordPracticeStage,
   WordPracticeType,
 } from '@/types/types.ts'
-import {
-  useDisableEventListener,
-  useOnKeyboardEventListener,
-  useStartKeyboardEventListener,
-} from '@/hooks/event.ts'
+import { useDisableEventListener, useOnKeyboardEventListener, useStartKeyboardEventListener } from '@/hooks/event.ts'
 import useTheme from '@/hooks/theme.ts'
 import { getCurrentStudyWord, useWordOptions } from '@/hooks/dict.ts'
-import {
-  _getDictDataByUrl,
-  _nextTick,
-  cloneDeep,
-  isMobile,
-  loadJsLib,
-  resourceWrap,
-  shuffle,
-} from '@/utils'
+import { _getDictDataByUrl, _nextTick, cloneDeep, isMobile, loadJsLib, resourceWrap, shuffle } from '@/utils'
 import { useRoute, useRouter } from 'vue-router'
 import Footer from '@/pages/word/components/Footer.vue'
 import Panel from '@/components/Panel.vue'
@@ -385,14 +373,16 @@ function wordLoop() {
 
 let toastInstance: ToastInstance = null
 
-function nextStage(originList, log) {
+function nextStage(originList: Word[], log: string = '', toast: boolean = false) {
   //每次都判断，因为每次都可能新增已掌握的单词
   let list = originList.filter(v => !data.excludeWords.includes(v.word))
   console.log(log)
   statStore.stage = statStore.nextStage
   if (list.length) {
-    if (toastInstance) toastInstance.close()
-    toastInstance = Toast.info('输入完成后按空格键切换下一个', { duration: 5000 })
+    if (toast) {
+      if (toastInstance) toastInstance.close()
+      toastInstance = Toast.info('输入完成后按空格键切换下一个', { duration: 5000 })
+    }
     data.words = list
     data.index = 0
   } else {
@@ -426,10 +416,7 @@ async function next(isTyping: boolean = true) {
   } else {
     if (data.index === data.words.length - 1) {
       //如果手动敲的，才轮询
-      if (
-        (statStore.stage === WordPracticeStage.FollowWriteNewWord || isTypingWrongWord.value) &&
-        isTyping
-      ) {
+      if ((statStore.stage === WordPracticeStage.FollowWriteNewWord || isTypingWrongWord.value) && isTyping) {
         if (settingStore.wordPracticeType !== WordPracticeType.Spell) {
           //回到最后一组的开始位置
           data.index = Math.floor(data.index / groupSize) * groupSize
@@ -461,19 +448,19 @@ async function next(isTyping: boolean = true) {
 
         if (settingStore.wordPracticeMode === WordPracticeMode.System) {
           if (statStore.stage === WordPracticeStage.FollowWriteNewWord) {
-            nextStage(shuffle(taskWords.new), '开始听写新词')
+            nextStage(shuffle(taskWords.new), '开始听写新词', true)
           } else if (statStore.stage === WordPracticeStage.ListenNewWord) {
             nextStage(shuffle(taskWords.new), '开始默写新词')
           } else if (statStore.stage === WordPracticeStage.DictationNewWord) {
             nextStage(taskWords.review, '开始自测昨日')
           } else if (statStore.stage === WordPracticeStage.IdentifyReview) {
-            nextStage(shuffle(taskWords.review), '开始听写上次')
+            nextStage(shuffle(taskWords.review), '开始听写上次', true)
           } else if (statStore.stage === WordPracticeStage.ListenReview) {
             nextStage(shuffle(taskWords.review), '开始默写上次')
           } else if (statStore.stage === WordPracticeStage.DictationReview) {
             nextStage(taskWords.write, '开始自测之前')
           } else if (statStore.stage === WordPracticeStage.IdentifyReviewAll) {
-            nextStage(shuffle(taskWords.write), '开始听写之前')
+            nextStage(shuffle(taskWords.write), '开始听写之前', true)
           } else if (statStore.stage === WordPracticeStage.ListenReviewAll) {
             nextStage(shuffle(taskWords.write), '开始默写之前')
           } else if (statStore.stage === WordPracticeStage.DictationReviewAll) {
@@ -481,13 +468,13 @@ async function next(isTyping: boolean = true) {
           }
         } else if (settingStore.wordPracticeMode === WordPracticeMode.ListenOnly) {
           if (statStore.stage === WordPracticeStage.ListenNewWord) {
-            nextStage(taskWords.review, '开始听写昨日')
+            nextStage(taskWords.review, '开始听写昨日',true)
           } else if (statStore.stage === WordPracticeStage.ListenReview) {
             nextStage(taskWords.write, '开始听写之前')
           } else if (statStore.stage === WordPracticeStage.ListenReviewAll) complete()
         } else if (settingStore.wordPracticeMode === WordPracticeMode.DictationOnly) {
           if (statStore.stage === WordPracticeStage.DictationNewWord) {
-            nextStage(taskWords.review, '开始默写昨日')
+            nextStage(taskWords.review, '开始默写昨日',true)
           } else if (statStore.stage === WordPracticeStage.DictationReview) {
             nextStage(taskWords.write, '开始默写之前')
           } else if (statStore.stage === WordPracticeStage.DictationReviewAll) complete()
@@ -501,13 +488,13 @@ async function next(isTyping: boolean = true) {
           if (statStore.stage === WordPracticeStage.Shuffle) complete()
         } else if (settingStore.wordPracticeMode === WordPracticeMode.Review) {
           if (statStore.stage === WordPracticeStage.IdentifyReview) {
-            nextStage(shuffle(taskWords.review), '开始听写昨日')
+            nextStage(shuffle(taskWords.review), '开始听写昨日',true)
           } else if (statStore.stage === WordPracticeStage.ListenReview) {
             nextStage(shuffle(taskWords.review), '开始默写昨日')
           } else if (statStore.stage === WordPracticeStage.DictationReview) {
             nextStage(taskWords.write, '开始自测之前')
           } else if (statStore.stage === WordPracticeStage.IdentifyReviewAll) {
-            nextStage(shuffle(taskWords.write), '开始听写之前')
+            nextStage(shuffle(taskWords.write), '开始听写之前',true)
           } else if (statStore.stage === WordPracticeStage.ListenReviewAll) {
             nextStage(shuffle(taskWords.write), '开始默写之前')
           } else if (statStore.stage === WordPracticeStage.DictationReviewAll) complete()
@@ -677,9 +664,7 @@ async function continueStudy() {
       console.log('没学完，强行跳过')
       store.sdict.lastLearnIndex = store.sdict.lastLearnIndex + statStore.newWordNumber
       // 忽略单词数
-      const ignoreCount = ignoreList.filter(word =>
-        store.sdict.words.some(w => w.word.toLowerCase() === word)
-      ).length
+      const ignoreCount = ignoreList.filter(word => store.sdict.words.some(w => w.word.toLowerCase() === word)).length
       // 如果lastLearnIndex已经超过可学单词数，则判定完成
       if (store.sdict.lastLearnIndex + ignoreCount >= store.sdict.length) {
         store.sdict.complete = true
@@ -725,18 +710,9 @@ function randomWrite() {
   settingStore.dictation = true
 }
 
-function nextRandomWrite() {
-  setPracticeWordCache(null)
-  console.log('继续随机默写')
-  initData(getCurrentStudyWord())
-  randomWrite()
-  showStatDialog = false
-}
-
 useEvents([
   [EventKey.repeatStudy, repeat],
   [EventKey.continueStudy, continueStudy],
-  [EventKey.randomWrite, nextRandomWrite],
   [ShortcutKey.ShowWord, show],
   [ShortcutKey.Previous, prev],
   [ShortcutKey.Next, skip],
@@ -752,7 +728,6 @@ useEvents([
   [ShortcutKey.ToggleConciseMode, toggleConciseMode],
   [ShortcutKey.TogglePanel, togglePanel],
   [ShortcutKey.RandomWrite, randomWrite],
-  [ShortcutKey.NextRandomWrite, nextRandomWrite],
 ])
 </script>
 
@@ -767,11 +742,7 @@ useEvents([
               <div class="word">{{ prevWord.word }}</div>
             </Tooltip>
           </div>
-          <div
-            class="center gap-2 cursor-pointer float-right mr-3"
-            @click="next(false)"
-            v-if="nextWord"
-          >
+          <div class="center gap-2 cursor-pointer float-right mr-3" @click="next(false)" v-if="nextWord">
             <Tooltip :title="`下一个(${settingStore.shortcutKeyMap[ShortcutKey.Next]})`">
               <div class="word" :class="settingStore.dictation && 'word-shadow'">
                 {{ nextWord.word }}
@@ -780,13 +751,7 @@ useEvents([
             <IconFluentArrowRight16Regular class="arrow" width="22" />
           </div>
         </div>
-        <TypeWord
-          ref="typingRef"
-          :word="word"
-          @wrong="onTypeWrong"
-          @complete="next"
-          @know="onWordKnow"
-        />
+        <TypeWord ref="typingRef" :word="word" @wrong="onTypeWrong" @complete="next" @know="onWordKnow" />
       </div>
     </template>
     共{{ Math.ceil(store.sdict.length / store.sdict.perDayStudyNumber) }}组
@@ -798,16 +763,12 @@ useEvents([
 
             <GroupList
               @click="jumpToGroup"
-              v-if="
-                taskWords.new.length && settingStore.wordPracticeMode !== WordPracticeMode.Shuffle
-              "
+              v-if="taskWords.new.length && settingStore.wordPracticeMode !== WordPracticeMode.Shuffle"
             />
             <BaseIcon
               v-if="
                 taskWords.new.length &&
-                ![WordPracticeMode.Review, WordPracticeMode.Shuffle].includes(
-                  settingStore.wordPracticeMode
-                )
+                ![WordPracticeMode.Review, WordPracticeMode.Shuffle].includes(settingStore.wordPracticeMode)
               "
               @click="continueStudy"
               :title="`下一组(${settingStore.shortcutKeyMap[ShortcutKey.NextChapter]})`"
@@ -815,10 +776,7 @@ useEvents([
               <IconFluentArrowRight16Regular class="arrow" width="22" />
             </BaseIcon>
 
-            <BaseIcon
-              @click="randomWrite"
-              :title="`随机默写(${settingStore.shortcutKeyMap[ShortcutKey.RandomWrite]})`"
-            >
+            <BaseIcon @click="randomWrite" :title="`随机默写(${settingStore.shortcutKeyMap[ShortcutKey.RandomWrite]})`">
               <IconFluentArrowShuffle16Regular class="arrow" width="22" />
             </BaseIcon>
           </div>

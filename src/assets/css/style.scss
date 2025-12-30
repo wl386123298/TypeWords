@@ -8,7 +8,6 @@
   --color-item-border: rgb(226, 226, 226);
 
   --color-tooltip-bg: white;
-  --color-tooltip-shadow: #d9d9d9;
   --color-font-2: rgb(46, 46, 46);
   --color-font-3: rgb(102, 116, 135);
   --color-font-active-1: white;
@@ -70,6 +69,8 @@
   --bg-card-secend: rgb(247, 247, 247);
 
   --bg-book: rgb(226 232 240);
+
+  --color-line: rgb(226, 226, 226);
 }
 
 html.dark {
@@ -91,8 +92,7 @@ html.dark {
   --bg-history: rgb(43, 45, 48);
   --color-item-border: rgb(41, 41, 41);
 
-  --color-tooltip-bg: #252525;
-  --color-tooltip-shadow: #3b3b3b;
+  --color-tooltip-bg: #35373a;
   --color-font-2: rgba(255, 255, 255, 0.5);
   --color-font-3: rgba(255, 255, 255, 0.3);
 
@@ -116,6 +116,7 @@ html.dark {
 
   --bg-book: #35373a;
 
+  --color-line: rgb(66, 66, 66);
 }
 
 @media (max-width: 1720px) {
@@ -403,7 +404,7 @@ a {
 
 .line {
   width: 100%;
-  border-bottom: 1px solid var(--color-item-border);
+  border-bottom: 1px solid var(--color-line);
   @apply hover:text-blue-700;
 }
 

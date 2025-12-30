@@ -19,6 +19,7 @@ export default defineConfig({
     'px-space': 'px-[var(--space)]',
     'py-space': 'py-[var(--space)]',
     'border-item': 'border-[var(--color-item-border)]',
+    'border-item-solid': 'border-1 border-solid border-[var(--color-item-border)]',
   },
   presets: [
     presetWind3(),

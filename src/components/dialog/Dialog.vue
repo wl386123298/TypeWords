@@ -245,7 +245,8 @@ $time: 0.3s;
   }
 
   .modal {
-    @apply relative bg-second overflow-hidden flex flex-col transition-all duration-300;
+    @apply relative overflow-hidden flex flex-col transition-all duration-300;
+    background: var(--color-card-bg);
 
     .close {
       @apply absolute right-1.2rem top-1.2rem z-999;

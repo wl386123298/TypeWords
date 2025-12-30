@@ -7,7 +7,7 @@ interface IProps {
   disabled?: boolean
   loading?: boolean
   size?: 'small' | 'normal' | 'large'
-  type?: 'primary' | 'link' | 'info' | 'orange'
+  type?: 'primary' | 'info' | 'orange'
 }
 
 withDefaults(defineProps<IProps>(), {
@@ -27,12 +27,7 @@ defineEmits(['click'])
       :class="[active && 'active', size, type, (disabled || loading) && 'disabled']"
     >
       <span :style="{ opacity: loading ? 0 : 1 }"><slot></slot></span>
-      <IconEosIconsLoading
-        v-if="loading"
-        class="loading"
-        width="18"
-        :color="type === 'info' ? '#000000' : '#ffffff'"
-      />
+      <IconEosIconsLoading v-if="loading" class="loading" width="18" :color="type === 'info' ? '#000000' : '#ffffff'" />
     </div>
   </Tooltip>
 </template>
@@ -45,7 +40,7 @@ defineEmits(['click'])
   --btn-info: white;
   --btn-info-hover: #eaeaea;
   --btn-orange: #facc15;
-  --btn-orange-hover: #fbe27e;
+  --btn-orange-hover: #bfac61;
 }
 
 html.dark {
@@ -121,15 +116,6 @@ html.dark {
 
     &:hover:not(.disabled) {
       background: var(--btn-primary-hover);
-    }
-  }
-
-  &.link {
-    border-radius: 0;
-    border-bottom: 2px solid transparent;
-
-    &:hover:not(.disabled) {
-      border-bottom: 2px solid var(--color-font-2);
     }
   }
 
