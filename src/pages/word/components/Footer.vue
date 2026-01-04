@@ -343,7 +343,6 @@ const stages = $computed(() => {
   .bottom {
     @apply relative w-full box-border rounded-xl bg-second shadow-lg z-10;
     padding: 0.2rem var(--space) calc(0.4rem + env(safe-area-inset-bottom, 0px)) var(--space);
-    border: 1px solid var(--color-item-border);
 
     .stat {
       @apply flex justify-around gap-[var(--stat-gap)] mt-2;

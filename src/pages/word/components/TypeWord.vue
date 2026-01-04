@@ -729,11 +729,10 @@ useEvents([
 .typing-word {
   width: 100%;
   flex: 1;
-  overflow: auto;
+  //overflow: auto;
   word-break: break-word;
   position: relative;
   color: var(--color-font-2);
-  padding-bottom: 8rem;
 
   .phonetic,
   .translate {

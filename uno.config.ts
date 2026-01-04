@@ -1,5 +1,5 @@
 // uno.config.ts
-import {defineConfig, presetWind3} from 'unocss'
+import { defineConfig, presetWind3 } from 'unocss'
 
 export default defineConfig({
   shortcuts: {
@@ -20,21 +20,20 @@ export default defineConfig({
     'py-space': 'py-[var(--space)]',
     'border-item': 'border-[var(--color-item-border)]',
     'border-item-solid': 'border-1 border-solid border-[var(--color-item-border)]',
+    card: 'rounded-xl p-4 mb-8 shadow-lg box-border relative bg-second',
   },
-  presets: [
-    presetWind3(),
-  ],
+  presets: [presetWind3()],
   // 自定义断点
   theme: {
     breakpoints: {
-      'xs': '480px',      // 自定义小断点
-      'sm': '640px',
-      'md': '768px',
-      'lg': '1024px',
-      'xl': '1280px',
+      xs: '480px', // 自定义小断点
+      sm: '640px',
+      md: '768px',
+      lg: '1024px',
+      xl: '1280px',
       '2xl': '1536px',
       '3xl': '1920px',
       '4k': '2560px',
-    }
+    },
   },
 })

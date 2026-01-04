@@ -466,13 +466,13 @@ async function next(isTyping: boolean = true) {
           }
         } else if (settingStore.wordPracticeMode === WordPracticeMode.ListenOnly) {
           if (statStore.stage === WordPracticeStage.ListenNewWord) {
-            nextStage(taskWords.review, '开始听写昨日',true)
+            nextStage(taskWords.review, '开始听写昨日', true)
           } else if (statStore.stage === WordPracticeStage.ListenReview) {
             nextStage(taskWords.write, '开始听写之前')
           } else if (statStore.stage === WordPracticeStage.ListenReviewAll) complete()
         } else if (settingStore.wordPracticeMode === WordPracticeMode.DictationOnly) {
           if (statStore.stage === WordPracticeStage.DictationNewWord) {
-            nextStage(taskWords.review, '开始默写昨日',true)
+            nextStage(taskWords.review, '开始默写昨日', true)
           } else if (statStore.stage === WordPracticeStage.DictationReview) {
             nextStage(taskWords.write, '开始默写之前')
           } else if (statStore.stage === WordPracticeStage.DictationReviewAll) complete()
@@ -486,13 +486,13 @@ async function next(isTyping: boolean = true) {
           if (statStore.stage === WordPracticeStage.Shuffle) complete()
         } else if (settingStore.wordPracticeMode === WordPracticeMode.Review) {
           if (statStore.stage === WordPracticeStage.IdentifyReview) {
-            nextStage(shuffle(taskWords.review), '开始听写昨日',true)
+            nextStage(shuffle(taskWords.review), '开始听写昨日', true)
           } else if (statStore.stage === WordPracticeStage.ListenReview) {
             nextStage(shuffle(taskWords.review), '开始默写昨日')
           } else if (statStore.stage === WordPracticeStage.DictationReview) {
             nextStage(taskWords.write, '开始自测之前')
           } else if (statStore.stage === WordPracticeStage.IdentifyReviewAll) {
-            nextStage(shuffle(taskWords.write), '开始听写之前',true)
+            nextStage(shuffle(taskWords.write), '开始听写之前', true)
           } else if (statStore.stage === WordPracticeStage.ListenReviewAll) {
             nextStage(shuffle(taskWords.write), '开始默写之前')
           } else if (statStore.stage === WordPracticeStage.DictationReviewAll) complete()
@@ -732,8 +732,12 @@ useEvents([
 <template>
   <PracticeLayout v-loading="loading" panelLeft="var(--word-panel-margin-left)">
     <template v-slot:practice>
-      <div class="practice-word">
-        <div class="absolute z-1 top-4 w-full" v-if="settingStore.showNearWord">
+      <div class="practice-word mb-50">
+        <div
+          class="fixed z-1 top-4 w-full"
+          style="left: calc(50vw + var(--aside-width) / 2 - var(--toolbar-width) / 2);width:var(--toolbar-width)"
+          v-if="settingStore.showNearWord"
+        >
           <div class="center gap-2 cursor-pointer float-left" @click="prev" v-if="prevWord">
             <IconFluentArrowLeft16Regular class="arrow" width="22" />
             <Tooltip :title="`上一个(${settingStore.shortcutKeyMap[ShortcutKey.Previous]})`">
@@ -752,7 +756,6 @@ useEvents([
         <TypeWord ref="typingRef" :word="word" @wrong="onTypeWrong" @complete="next" @know="onWordKnow" />
       </div>
     </template>
-    共{{ Math.ceil(store.sdict.length / store.sdict.perDayStudyNumber) }}组
     <template v-slot:panel>
       <Panel>
         <template v-slot:title>

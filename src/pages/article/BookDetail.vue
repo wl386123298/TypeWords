@@ -4,7 +4,7 @@ import BackIcon from '@/components/BackIcon.vue'
 import Empty from '@/components/Empty.vue'
 import ArticleList from '@/components/list/ArticleList.vue'
 import { useBaseStore } from '@/stores/base.ts'
-import { Article, Dict, DictId, DictType } from '@/types/types.ts'
+import { Article, Dict, DictId, DictType, ShortcutKey } from '@/types/types.ts'
 import { useRuntimeStore } from '@/stores/runtime.ts'
 import BaseButton from '@/components/BaseButton.vue'
 import { useRoute, useRouter } from 'vue-router'
@@ -19,6 +19,7 @@ import { useSettingStore } from '@/stores/setting.ts'
 import { useFetch } from '@vueuse/core'
 import { AppEnv, DICT_LIST } from '@/config/env.ts'
 import { detail } from '@/apis'
+import BaseIcon from '@/components/BaseIcon.vue'
 
 const runtimeStore = useRuntimeStore()
 const settingStore = useSettingStore()
@@ -101,6 +102,7 @@ async function init() {
           }
         }
       }
+      selectArticle = runtimeStore.editDict.articles[0]
       loading = false
     }
   }
@@ -174,11 +176,17 @@ const list = $computed(() => {
     }),
   ].concat(runtimeStore.editDict.articles)
 })
+
+let showAudio = $ref(false)
+let showTranslate = $ref(true)
 </script>
 
 <template>
-  <div class="bg-second h-screen overflow-hidden">
-    <div class="mb-0 flex h-full p-space box-border flex-col" v-if="showBookDetail">
+  <div class="center h-screen overflow-hidden">
+    <div
+      class="mb-0 flex p-space box-border flex-col bg-second w-full 3xl:w-7/10 2xl:w-8/10 xl:w-full 2xl:card 2xl:h-[97vh] h-full"
+      v-if="showBookDetail"
+    >
       <div class="dict-header flex justify-between items-center relative">
         <BackIcon class="dict-back z-2" />
         <div class="dict-title absolute text-2xl text-align-center w-full">{{ runtimeStore.editDict.name }}</div>
@@ -191,9 +199,8 @@ const list = $computed(() => {
           <BaseButton :loading="studyLoading || loading" @click="addMyStudyList">学习</BaseButton>
         </div>
       </div>
-
       <div class="flex flex-1 overflow-hidden mt-3">
-        <div class="w-70 overflow-auto">
+        <div class="3xl:w-80 2xl:w-60 xl:w-55 lg:w-50 overflow-auto">
           <ArticleList
             :show-desc="true"
             v-if="runtimeStore.editDict.length"
@@ -217,11 +224,49 @@ const list = $computed(() => {
                 <div class="text-lg">介绍：{{ runtimeStore.editDict.description }}</div>
               </div>
               <div class="text-base" v-if="totalSpend">总学习时长：{{ totalSpend }}</div>
-
-              <div class="line my-3"></div>
             </template>
             <template v-else>
+              <div class="">
+                <div class="text-3xl flex justify-between items-center relative">
+                  <span>
+                    <span class="font-bold">{{ selectArticle.title }}</span>
+                    <span class="ml-6 text-2xl" v-if="showTranslate">{{ selectArticle.titleTranslate }}</span>
+                  </span>
+                  <div>
+                    <BaseIcon title="显示音频" @click="showAudio = !showAudio">
+                      <IconBxVolumeFull />
+                    </BaseIcon>
+                    <BaseIcon :title="`开关释义显示`" @click="showTranslate = !showTranslate">
+                      <IconFluentTranslate16Regular v-if="showTranslate" />
+                      <IconFluentTranslateOff16Regular v-else />
+                    </BaseIcon>
+                  </div>
+                </div>
+                <ArticleAudio
+                  v-if="showAudio"
+                  class="mt-4"
+                  :article="selectArticle"
+                  :autoplay="settingStore.articleAutoPlayNext"
+                  @ended="next"
+                />
+                <div class="mb-4 mt-4 text-2xl" v-if="selectArticle?.question?.text">
+                  Question: {{ selectArticle?.question?.text }}
+                </div>
+                <div class="text-2xl line-height-normal en-article-family" v-if="selectArticle.text">
+                  <div class="my-6" v-for="t in selectArticle.text.split('\n\n')">{{ t }}</div>
+                  <div class="text-right italic mb-5">{{ selectArticle?.quote?.text }}</div>
+                </div>
+              </div>
+              <div class="line my-10"></div>
+              <div class="mt-6" v-if="showTranslate">
+                <div class="text-xl line-height-normal" v-if="selectArticle.textTranslate">
+                  <div class="my-5" v-for="t in selectArticle.textTranslate.split('\n\n')">{{ t }}</div>
+                  <div class="text-right italic mb-5">{{ selectArticle?.quote?.translate }}</div>
+                </div>
+                <Empty v-else />
+              </div>
               <div class="font-family text-base mb-4 pr-2" v-if="currentPractice.length">
+                <div class="line my-10"></div>
                 <div class="text-2xl font-bold">学习记录</div>
                 <div class="mt-1 mb-3">总学习时长：{{ msToHourMinute(total(currentPractice, 'spend')) }}</div>
                 <div
@@ -231,35 +276,6 @@ const list = $computed(() => {
                   <span class="color-gray">{{ _dateFormat(i.startDate) }}</span>
                   <span>{{ msToHourMinute(i.spend) }}</span>
                 </div>
-              </div>
-              <div class="en-article-family">
-                <div class="text-3xl">
-                  <span class="">{{ selectArticle.title }}</span>
-                  <span class="ml-6 text-2xl">{{ selectArticle.titleTranslate }}</span>
-                </div>
-                <div class="mb-10 mt-6 text-2xl" v-if="selectArticle?.question?.text">
-                  <div class="flex justify-between items-center">
-                    <span class="">First Listen and then answer the following question.</span>
-                    <ArticleAudio
-                      class="w-100!"
-                      :article="selectArticle"
-                      :autoplay="settingStore.articleAutoPlayNext"
-                      @ended="next"
-                    />
-                  </div>
-                  <div class="decoration-dashed underline">{{ selectArticle?.question?.text }}</div>
-                </div>
-                <div class="text-2xl line-height-normal" v-if="selectArticle.text">
-                  <div class="my-5" v-for="t in selectArticle.text.split('\n\n')">{{ t }}</div>
-                  <div class="text-right italic mb-5">{{ selectArticle?.quote?.text }}</div>
-                </div>
-              </div>
-              <div class="mt-13">
-                <div class="text-xl line-height-normal" v-if="selectArticle.textTranslate">
-                  <div class="my-5" v-for="t in selectArticle.textTranslate.split('\n\n')">{{ t }}</div>
-                  <div class="text-right italic mb-5">{{ selectArticle?.quote?.translate }}</div>
-                </div>
-                <Empty v-else />
               </div>
             </template>
           </div>

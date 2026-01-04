@@ -11,11 +11,7 @@ import SettingDialog from '@/components/setting/SettingDialog.vue'
 import { AppEnv, DICT_LIST, LIB_JS_URL, TourConfig } from '@/config/env.ts'
 import { genArticleSectionData, usePlaySentenceAudio } from '@/hooks/article.ts'
 import { useArticleOptions } from '@/hooks/dict.ts'
-import {
-  useDisableEventListener,
-  useOnKeyboardEventListener,
-  useStartKeyboardEventListener,
-} from '@/hooks/event.ts'
+import { useDisableEventListener, useOnKeyboardEventListener, useStartKeyboardEventListener } from '@/hooks/event.ts'
 import useTheme from '@/hooks/theme.ts'
 import ArticleAudio from '@/pages/article/components/ArticleAudio.vue'
 import EditSingleArticleModal from '@/pages/article/components/EditSingleArticleModal.vue'
@@ -36,16 +32,7 @@ import {
   Statistics,
   Word,
 } from '@/types/types.ts'
-import {
-  _getDictDataByUrl,
-  _nextTick,
-  cloneDeep,
-  isMobile,
-  loadJsLib,
-  msToMinute,
-  resourceWrap,
-  total,
-} from '@/utils'
+import { _getDictDataByUrl, _nextTick, cloneDeep, isMobile, loadJsLib, msToMinute, resourceWrap, total } from '@/utils'
 import { getPracticeArticleCache, setPracticeArticleCache } from '@/utils/cache.ts'
 import { emitter, EventKey, useEvents } from '@/utils/eventBus.ts'
 import { computed, onMounted, onUnmounted, provide, watch } from 'vue'
@@ -382,10 +369,7 @@ function wrong(word: Word) {
 }
 
 function nextWord(word: ArticleWord) {
-  if (
-    !store.allIgnoreWords.includes(word.word.toLowerCase()) &&
-    word.type === PracticeArticleWordType.Word
-  ) {
+  if (!store.allIgnoreWords.includes(word.word.toLowerCase()) && word.type === PracticeArticleWordType.Word) {
     statStore.inputWordNumber++
   }
 }
@@ -506,10 +490,7 @@ provide('currentPractice', currentPractice)
     <template v-slot:panel>
       <Panel :style="{ width: 'var(--article-panel-width)' }">
         <template v-slot:title>
-          <span
-            >{{ store.sbook.name }} ({{ store.sbook.lastLearnIndex + 1 }} /
-            {{ articleData.list.length }})</span
-          >
+          <span>{{ store.sbook.name }} ({{ store.sbook.lastLearnIndex + 1 }} / {{ articleData.list.length }})</span>
         </template>
         <div class="panel-page-item pl-4">
           <ArticleList
@@ -525,28 +506,28 @@ provide('currentPractice', currentPractice)
       </Panel>
     </template>
     <template v-slot:footer>
-      <div class="footer">
-        <Tooltip :title="settingStore.showToolbar ? '收起' : '展开'">
-          <IconFluentChevronLeft20Filled
-            @click="settingStore.showToolbar = !settingStore.showToolbar"
-            class="arrow"
-            :class="!settingStore.showToolbar && 'down'"
-            color="#999"
-          />
-        </Tooltip>
-        <div class="bottom">
+      <div class="footer pb-3">
+        <div class="center h-10">
+          <Tooltip :title="settingStore.showToolbar ? '收起' : '展开'">
+            <IconFluentChevronLeft20Filled
+              @click="settingStore.showToolbar = !settingStore.showToolbar"
+              :class="!settingStore.showToolbar && 'down'"
+              color="#999"
+              class="arrow"
+            />
+          </Tooltip>
+        </div>
+        <div class="bottom ">
           <div class="flex justify-between items-center gap-2">
             <div class="stat">
               <div class="row">
-                <div class="num">
-                  {{ currentPractice.length }}次/{{ msToMinute(total(currentPractice, 'spend')) }}
-                </div>
+                <div class="num">{{ currentPractice.length }}次/{{ msToMinute(total(currentPractice, 'spend')) }}</div>
                 <div class="line"></div>
                 <div class="name">记录</div>
               </div>
               <div class="row">
-<!--                <div class="num">{{statStore.spend }}分钟</div>-->
-                 <div class="num">{{ Math.floor(statStore.spend / 1000 / 60) }}分钟</div>
+                <!--                <div class="num">{{statStore.spend }}分钟</div>-->
+                <div class="num">{{ Math.floor(statStore.spend / 1000 / 60) }}分钟</div>
                 <div class="line"></div>
                 <div class="name">时间</div>
               </div>
@@ -557,9 +538,7 @@ provide('currentPractice', currentPractice)
                     <IconFluentQuestionCircle20Regular width="18" />
                     <template #reference>
                       <div>
-                        统计词数{{
-                          settingStore.ignoreSimpleWord ? '不包含' : '包含'
-                        }}简单词，不包含已掌握
+                        统计词数{{ settingStore.ignoreSimpleWord ? '不包含' : '包含' }}简单词，不包含已掌握
                         <div>简单词可在设置 -> 练习设置 -> 简单词过滤中修改</div>
                       </div>
                     </template>
@@ -581,10 +560,7 @@ provide('currentPractice', currentPractice)
               <div class="flex gap-2 center">
                 <SettingDialog type="article" />
 
-                <BaseIcon
-                  :title="`下一句(${settingStore.shortcutKeyMap[ShortcutKey.Next]})`"
-                  @click="skip"
-                >
+                <BaseIcon :title="`下一句(${settingStore.shortcutKeyMap[ShortcutKey.Next]})`" @click="skip">
                   <IconFluentArrowBounce20Regular class="transform-rotate-180" />
                 </BaseIcon>
                 <BaseIcon
@@ -636,6 +612,7 @@ provide('currentPractice', currentPractice)
 <style scoped lang="scss">
 .footer {
   width: var(--article-toolbar-width);
+  @apply bg-primary;
 
   .bottom {
     @apply relative w-full box-border rounded-lg bg-second shadow-lg z-2;
@@ -667,9 +644,6 @@ provide('currentPractice', currentPractice)
   }
 
   .arrow {
-    position: absolute;
-    top: -40%;
-    left: 50%;
     cursor: pointer;
     transition: all 0.5s;
     transform: rotate(-90deg);
@@ -677,7 +651,6 @@ provide('currentPractice', currentPractice)
     font-size: 1.2rem;
 
     &.down {
-      top: -70%;
       transform: rotate(90deg);
     }
   }

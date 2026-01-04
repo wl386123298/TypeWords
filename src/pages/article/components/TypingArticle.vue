@@ -846,11 +846,10 @@ $translate-lh: 3.2;
 $article-lh: 2.4;
 
 .typing-article {
-  height: 100%;
-  overflow: auto;
   color: var(--color-article);
   width: var(--article-width);
   font-size: 1.6rem;
+  margin-bottom: 10rem;
 
   header {
     word-wrap: break-word;
