@@ -83,7 +83,6 @@ async function close() {
 watch(
   () => props.modelValue,
   n => {
-    // console.log('n', n)
     if (n) {
       id = Date.now()
       runtimeStore.modalList.push({ id, close })

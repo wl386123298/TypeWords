@@ -185,7 +185,7 @@ export const useBaseStore = defineStore('base', {
               Object.assign(data, res.data)
             }
           }
-          console.log('data', data)
+          // console.log('data', data)
           this.setState(data)
         } catch (e) {
           console.error('读取本地dict数据失败', e)

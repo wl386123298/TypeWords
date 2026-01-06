@@ -3,30 +3,20 @@ import BackIcon from '@/components/BackIcon.vue'
 import Empty from '@/components/Empty.vue'
 import ArticleList from '@/components/list/ArticleList.vue'
 import { useBaseStore } from '@/stores/base.ts'
-import { Article, Dict, DictId, DictType } from '@/types/types.ts'
+import { Article, Dict, DictType } from '@/types/types.ts'
 import { useRuntimeStore } from '@/stores/runtime.ts'
 import BaseButton from '@/components/BaseButton.vue'
 import { useRoute, useRouter } from 'vue-router'
 import EditBook from '@/pages/article/components/EditBook.vue'
 import { computed, onMounted, onUnmounted, watch } from 'vue'
-import {
-  _dateFormat,
-  _getDictDataByUrl,
-  _nextTick,
-  cloneDeep,
-  msToHourMinute,
-  resourceWrap,
-  total,
-  useNav,
-} from '@/utils'
+import { _dateFormat, _getDictDataByUrl, _nextTick, msToHourMinute, resourceWrap, total, useNav } from '@/utils'
 import { getDefaultArticle, getDefaultDict } from '@/types/func.ts'
 import Toast from '@/components/base/toast/Toast.ts'
 import ArticleAudio from '@/pages/article/components/ArticleAudio.vue'
 import { MessageBox } from '@/utils/MessageBox.tsx'
 import { useSettingStore } from '@/stores/setting.ts'
 import { useFetch } from '@vueuse/core'
-import { AppEnv, DICT_LIST } from '@/config/env.ts'
-import { detail } from '@/apis'
+import { DICT_LIST } from '@/config/env.ts'
 import BaseIcon from '@/components/BaseIcon.vue'
 import Switch from '@/components/base/Switch.vue'
 import { useGetDict } from '@/hooks/dict.ts'
@@ -70,7 +60,7 @@ const showBookDetail = computed(() => {
   return !(isAdd || isEdit)
 })
 
-const { dict, loading } = useGetDict()
+const { loading } = useGetDict()
 
 onMounted(() => {
   if (route.query?.isAdd) {
@@ -157,6 +147,7 @@ const list = $computed(() => {
     }),
   ].concat(runtimeStore.editDict.articles)
 })
+console.log('list',list)
 
 let showTranslate = $ref(true)
 let startPlay = $ref(false)
@@ -185,6 +176,7 @@ const shouldShowInlineTranslation = $computed(() => {
 
 // 定位翻译到原文下方
 function positionTranslations() {
+  if (loading.value || selectArticle.id === -1) return
   _nextTick(() => {
     const articleRect = articleWrapperRef.getBoundingClientRect()
     selectArticle.textTranslate.split('\n\n').forEach((paragraph, paraIndex) => {
@@ -219,8 +211,10 @@ watch([() => displayMode, () => selectArticle.id, () => showTranslate], () => {
 
 <template>
   <div class="center h-screen">
-    <div class="bg-second w-full 3xl:w-7/10 2xl:w-8/10 xl:w-full 2xl:card 2xl:h-[97vh] h-full overflow-hidden mb-0">
-      <div class="flex p-space box-border flex-col h-full" v-if="showBookDetail">
+    <div
+      class="bg-second w-full 3xl:w-7/10 2xl:w-8/10 xl:w-full 2xl:card 2xl:h-[97vh] h-full p-3 box-border overflow-hidden mb-0"
+    >
+      <div class="flex box-border flex-col h-full" v-if="showBookDetail" v-loading="loading">
         <div class="dict-header flex justify-between items-center relative">
           <div class="flex gap-space">
             <BackIcon class="dict-back z-2" />
@@ -239,7 +233,7 @@ watch([() => displayMode, () => selectArticle.id, () => showTranslate], () => {
           <div class="3xl:w-80 2xl:w-60 xl:w-55 lg:w-50 overflow-auto">
             <ArticleList
               :show-desc="true"
-              v-if="runtimeStore.editDict.length"
+              v-if="list.length"
               @click="handleCheckedChange"
               :list="list"
               :active-id="selectArticle.id"
@@ -257,16 +251,16 @@ watch([() => displayMode, () => selectArticle.id, () => showTranslate], () => {
                     v-if="runtimeStore.editDict?.cover"
                     alt=""
                   />
-                  <div class="text-lg">介绍：{{ runtimeStore.editDict.description }}</div>
+                  <div class="text-lg">{{ runtimeStore.editDict.description }}</div>
                 </div>
-                <div class="text-base" v-if="totalSpend">总学习时长：{{ totalSpend }}</div>
+                <div class="text-base mt-10" v-if="totalSpend">总学习时长：{{ totalSpend }}</div>
               </template>
               <template v-else>
                 <div class="flex-1 overflow-auto pb-30">
                   <div>
                     <div class="flex justify-between items-center relative">
                       <span>
-                        <span class="text-4xl">{{ selectArticle.title }}</span>
+                        <span class="text-3xl">{{ selectArticle.title }}</span>
                         <span class="ml-6 text-2xl" v-if="showTranslate">{{ selectArticle.titleTranslate }}</span>
                       </span>
                       <div class="flex items-center gap-2 mr-4">
@@ -397,7 +391,10 @@ watch([() => displayMode, () => selectArticle.id, () => showTranslate], () => {
                     </div>
                   </template>
                 </div>
-                <div class="border-t-1 border-t-gray-300 border-solid border-0 center gap-2 pt-4">
+                <div
+                  v-if="selectArticle.audioSrc || selectArticle.audioFileId"
+                  class="border-t-1 border-t-gray-300 border-solid border-0 center gap-2 pt-4"
+                >
                   <ArticleAudio
                     :article="selectArticle"
                     @update-speed="handleSpeedUpdate"
@@ -416,7 +413,7 @@ watch([() => displayMode, () => selectArticle.id, () => showTranslate], () => {
           </div>
         </div>
       </div>
-      <div class="card mb-0 dict-detail-card" v-else>
+      <div class="" v-else>
         <div class="dict-header flex justify-between items-center relative">
           <BackIcon class="dict-back z-2" @click="isAdd ? $router.back() : (isEdit = false)" />
           <div class="dict-title absolute text-2xl text-align-center w-full">

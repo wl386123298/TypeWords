@@ -2,8 +2,8 @@ import { Article, Dict, DictId, DictType, TaskWords, Word } from '@/types/types.
 import { useBaseStore } from '@/stores/base.ts'
 import { useSettingStore } from '@/stores/setting.ts'
 import { getDefaultDict, getDefaultWord } from '@/types/func.ts'
-import { _getDictDataByUrl, cloneDeep, getRandomN, resourceWrap, shuffle, splitIntoN } from '@/utils'
-import { onMounted, watch } from 'vue'
+import { _getDictDataByUrl, cloneDeep, getRandomN, resourceWrap, shuffle, sleep, splitIntoN } from '@/utils'
+import { onMounted, ref, watch } from 'vue'
 import { AppEnv, DICT_LIST } from '@/config/env.ts'
 import { detail } from '@/apis'
 import { useRuntimeStore } from '@/stores/runtime.ts'
@@ -220,32 +220,31 @@ export function getCurrentStudyWord(): TaskWords {
 export function useGetDict() {
   const store = useBaseStore()
   const runtimeStore = useRuntimeStore()
-  let loading = $ref(false)
+  let loading = ref(false)
   const route = useRoute()
   const router = useRouter()
 
   watch(
     [() => store.load, () => loading],
     ([a, b]) => {
-      if (a && b) loadDict()
+      if (a && b.value) loadDict()
     },
     { immediate: true }
   )
 
   onMounted(() => {
     if (!runtimeStore.editDict?.id) {
-      let dictId = route.params?.id
+      let dictId = route.query?.id
       if (!dictId) {
         return router.push('/articles')
       }
-      loading = true
+      loading.value = true
     } else {
       loadDict(runtimeStore.editDict)
     }
   })
 
   async function loadDict(dict?: Dict) {
-    // console.log('load好了开始加载')
     if (!dict) {
       dict = getDefaultDict()
       let dictId = route.query.id
@@ -262,7 +261,7 @@ export function useGetDict() {
         ![DictId.articleCollect].includes(dict.en_name || dict.id) &&
         !dict?.is_default
       ) {
-        loading = true
+        loading.value = true
         let r = await _getDictDataByUrl(dict, DictType.article)
         runtimeStore.editDict = r
       }
@@ -277,14 +276,13 @@ export function useGetDict() {
           }
         }
       }
-      loading = false
+      loading.value = false
     } else {
-      // router.push('/articles')
+      router.push('/articles')
     }
   }
 
   return {
-    dict: runtimeStore.editDict,
     loading,
   }
 }

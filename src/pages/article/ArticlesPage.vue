@@ -75,7 +75,6 @@ async function init() {
 watch(
   () => store?.sbook?.id,
   n => {
-    console.log('n', n)
     if (!n) {
       _nextTick(async () => {
         const Shepherd = await loadJsLib('Shepherd', LIB_JS_URL.SHEPHERD)
