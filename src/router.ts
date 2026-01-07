@@ -1,6 +1,6 @@
 import * as VueRouter from 'vue-router'
 import {RouteRecordRaw} from 'vue-router'
-import Layout from "@/pages/layout.vue";
+import Layout from "@/layout/default.vue";
 import words from "@/pages/(words)/words.vue";
 import DictDetail from "@/pages/(words)/dict-detail.vue";
 import DictList from "@/pages/(words)/dict-list.vue";
@@ -12,7 +12,7 @@ import BookDetail from "@/pages/(articles)/book-detail.vue";
 import BookList from "@/pages/(articles)/book-list.vue";
 import PracticeArticles from "@/pages/(articles)/practice-articles/[id].vue";
 
-import setting from "@/pages/setting/Setting.vue";
+import setting from "@/pages/setting.vue";
 import login from "@/pages/(user)/login.vue";
 import user from "@/pages/(user)/user.vue";
 import vip from "@/pages/(user)/vip.vue";
@@ -53,7 +53,6 @@ export const routes: RouteRecordRaw[] = [
     ]
   },
   {path: '/batch-edit-article', component: () => import("@/pages/(articles)/batch-edit-article.vue")},
-  {path: '/test', component: () => import("@/pages/test/test.vue")},
   {path: '/:pathMatch(.*)*', redirect: '/words'},
 ]
 
