@@ -24,7 +24,7 @@ function selectDict(e) {
 
 async function getDictDetail(val: DictResource) {
   runtimeStore.editDict = getDefaultDict(val)
-  nav('book-detail', {from: 'list'})
+  nav('/book', {from: 'list'})
 }
 
 let showSearchInput = $ref(false)

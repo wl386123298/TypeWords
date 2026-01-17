@@ -8,7 +8,7 @@
 // import WordTest from "@/pages/(words)/words-test/[id].vue";
 //
 // import articles from "@/pages/(articles)/articles.vue";
-// import BookDetail from "@/pages/(articles)/book-detail.vue";
+// import BookDetail from "@/pages/(articles)/book.vue";
 // import BookList from "@/pages/(articles)/book-list.vue";
 // import PracticeArticles from "@/pages/(articles)/practice-articles/[id].vue";
 //
@@ -39,7 +39,7 @@
 //       {path: 'article', redirect: '/articles'},
 //       {path: 'practice-articles/:id', component: PracticeArticles},
 //       {path: 'study-article', redirect: '/articles'},
-//       {path: 'book-detail', component: BookDetail},
+//       {path: 'book', component: BookDetail},
 //       {path: 'book-list', component: BookList},
 //
 //       {path: 'login', component: login},

@@ -407,7 +407,7 @@ a {
 
 .book {
   @extend .anim;
-  @apply p-3 rounded-md relative cursor-pointer hover:bg-fifth flex flex-col justify-between shrink-0;
+  @apply p-3 rounded-md relative cursor-pointer hover:bg-fifth border-item-solid flex flex-col justify-between shrink-0;
   background: var(--bg-book);
   $w: 7rem;
   width: $w;

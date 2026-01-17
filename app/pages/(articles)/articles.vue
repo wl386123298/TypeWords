@@ -155,8 +155,8 @@ function toggleSelect(item) {
 
 async function goBookDetail(val: DictResource) {
   runtimeStore.editDict = getDefaultDict(val)
-  // nav('book-detail',{id: val.id})
-  nav('/book-detail/' + val.id)
+  // nav('book',{id: val.id})
+  nav('/book/' + val.id)
 }
 
 const totalSpend = $computed(() => {
@@ -316,7 +316,7 @@ onMounted(() => {
           >
             {{ isMultiple ? '取消' : '管理书籍' }}
           </div>
-          <div class="color-link cursor-pointer" @click="nav('book-detail', { isAdd: true })">创建个人书籍</div>
+          <div class="color-link cursor-pointer" @click="nav('/book', { isAdd: true })">创建个人书籍</div>
         </div>
       </div>
       <div class="flex gap-4 flex-wrap mt-4">

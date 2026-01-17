@@ -89,10 +89,10 @@ export default defineNuxtConfig({
     '/words': { ssr: false },
     '/articles': { ssr: false },
     '/setting': { ssr: false },
-    '/book-detail/article_nce1': { prerender: true },
-    '/book-detail/article_nce2': { prerender: true },
-    '/book-detail/article_nce3': { prerender: true },
-    '/book-detail/article_nce4': { prerender: true },
+    '/book/nce1': { prerender: true },
+    '/book/nce2': { prerender: true },
+    '/book/nce3': { prerender: true },
+    '/book/nce4': { prerender: true },
   },
   vite: {
     plugins: [

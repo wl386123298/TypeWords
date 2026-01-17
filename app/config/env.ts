@@ -48,7 +48,7 @@ export const DICT_LIST = {
     },
     ARTICLE: {
         ALL: `/list/article.json`,
-        RECOMMENDED: `/list/article.json`,
+        RECOMMENDED: `/list/recommend_article.json`,
     },
 }
 
