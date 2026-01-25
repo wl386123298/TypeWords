@@ -65,34 +65,26 @@ class ChatPanel {
 
 	private _getHtmlForWebview(webview: vscode.Webview) {
 		const websiteUrl = 'https://typewords.cc';
-		
+
 		return `<!DOCTYPE html>
-			<html lang="zh-CN">
+			<html lang="zh-CN" style="width: 100%!important; height: 100%!important;">
 			<head>
 				<meta charset="UTF-8">
 				<meta http-equiv="Content-Security-Policy" content="default-src 'none'; frame-src ${websiteUrl};">
 				<meta name="viewport" content="width=device-width, initial-scale=1.0">
 				<style>
-					* {
-						margin: 0;
-						padding: 0;
-						box-sizing: border-box;
-					}
-					html, body {
-						width: 100%;
-						height: 100%;
-						overflow: hidden;
-						position: fixed;
-					}
-					iframe {
-						position: absolute;
-						top: 0;
-						left: 0;
-						width: 100%;
-						height: 100%;
-						border: none;
-						display: block;
-					}
+					 html, body {
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+    }
+    iframe {
+      width: 100%;
+      height: 100vh;
+      border: none;
+    }
 				</style>
 				<title>单词练习</title>
 			</head>
@@ -119,5 +111,4 @@ export function activate(context: vscode.ExtensionContext) {
 }
 
 // This method is called when your extension is deactivated
-export function deactivate() {}
-    
+export function deactivate() { }
