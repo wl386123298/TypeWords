@@ -174,9 +174,13 @@ async function onTyping(e: KeyboardEvent) {
           return
         }
         showWordResult = inputLock = false
-        if (shouldRepeat()) {
-          repeat()
-        } else {
+        if (settingStore.wordPracticeType === WordPracticeType.FollowWrite) {
+          if (shouldRepeat()) {
+            repeat()
+          } else {
+            emit('complete')
+          }
+        }else {
           emit('complete')
         }
       } else {
