@@ -9,9 +9,9 @@ import { useRuntimeStore } from '@/stores/runtime.ts'
 import { useSettingStore } from '@/stores/setting.ts'
 import { ShortcutKey } from '@/types/enum.ts'
 import { onMounted, watch } from 'vue'
-import { useRouter } from 'vue-router'
+import { useRouter ,useRoute} from 'vue-router'
 import 'vue-virtual-scroller/dist/vue-virtual-scroller.css'
-import { useInit } from '~/composables/useInit.ts'
+import { useInit } from '@/composables/useInit.ts'
 
 const router = useRouter()
 const { toggleTheme, getTheme, setTheme } = useTheme()

@@ -5,6 +5,9 @@ import { useUserStore } from '~/stores/user.ts'
 import { syncSetting } from '~/apis'
 import { get, set } from 'idb-keyval'
 import { AppEnv, DictId } from '~/config/env.ts'
+import { shakeCommonDict } from '@/utils/index.ts'
+import type { BaseState } from '@/stores/base.ts'
+import { SAVE_DICT_KEY, LOCAL_FILE_KEY, SAVE_SETTING_KEY, APP_VERSION } from '@/config/env.ts'
 
 export function useInit() {
   const store = useBaseStore()
