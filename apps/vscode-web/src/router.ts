@@ -22,8 +22,7 @@ export const routes: RouteRecordRaw[] = [
     path: '/',
     component: Layout,
     children: [
-      { path: '/', redirect: '/words' },
-      { path: 'words', component: words },
+      { path: '/', component: words },
       { path: 'practice-words/:id', component: PracticeWords },
       { path: 'word-test/:id', component: WordTest },
       { path: 'study-word', redirect: '/words' },

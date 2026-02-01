@@ -65,7 +65,7 @@ class ChatPanel {
     // - Nuxt preview 默认端口是 4173（但可以通过 --port 参数修改）
     // - 如果使用其他端口（如 3000），请修改下面的端口号
     // - 生产环境可以使用: 'https://typewords-c3i.pages.dev'
-		const cdnUrl = 'https://441bee76.typewords-c3i.pages.dev';
+		const cdnUrl = 'https://typewords-vscode.pages.dev';
 
     // 生成 nonce 用于 CSP
     const nonce = Buffer.from(Date.now().toString()).toString('base64')
@@ -90,16 +90,10 @@ class ChatPanel {
 			</head>
 			<body>
 			<div id="app"></div>
-			  <script type="module" crossorigin src="
-https://441bee76.typewords-c3i.pages.dev/vscode/assets/index-CbprgzOC.js"></script>
-  <link rel="modulepreload" crossorigin href="
-https://441bee76.typewords-c3i.pages.dev/vscode/assets/icons-DVb7W-0B.js">
-  <link rel="modulepreload" crossorigin href="
-https://441bee76.typewords-c3i.pages.dev/vscode/assets/utils-Bkoc15Tl.js">
-  <link rel="stylesheet" crossorigin href="
-https://441bee76.typewords-c3i.pages.dev/vscode/assets/utils-pqXEIRJB.css">
-  <link rel="stylesheet" crossorigin href="
-https://441bee76.typewords-c3i.pages.dev/vscode/assets/index-D4BRJAZe.css">
+
+  <script type="module" crossorigin src="${cdnUrl}/assets/index-BLTa68ON.js"></script>
+  <link rel="stylesheet" crossorigin href="${cdnUrl}/assets/index-AqlCT8UZ.css">
+
 			</body>`
   }
 }
