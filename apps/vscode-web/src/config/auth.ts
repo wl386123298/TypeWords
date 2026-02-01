@@ -4,8 +4,7 @@ export const WECHAT_CONFIG = {
   appId: 'your_wechat_app_id',
 
   // 微信授权回调地址
-  // redirectUri: `${window.location.origin}/wechat/callback`,
-  redirectUri: `/wechat/callback`,
+  redirectUri: `${window.location.origin}/wechat/callback`,
 
   // 授权作用域
   scope: 'snsapi_userinfo',

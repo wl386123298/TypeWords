@@ -16,7 +16,7 @@ function onClick() {
 
 <template>
   <BaseIcon
-      :title="$t('back')"
+      title="返回"
       @click="onClick"
   >
     <IconFluentChevronLeft28Filled/>

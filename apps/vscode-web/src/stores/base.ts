@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import type { Dict, Word } from '@/types/types'
+import { Dict, Word } from '../types/types'
 import { _getStudyProgress, checkAndUpgradeSaveDict, shakeCommonDict } from '@/utils'
 import { shallowReactive } from 'vue'
 import { getDefaultDict } from '@/types/func'
@@ -82,7 +82,9 @@ export const getDefaultBaseState = (): BaseState => ({
     studyIndex: -1,
   },
   article: {
-    bookList: [getDefaultDict({ id: DictId.articleCollect, en_name: DictId.articleCollect, name: '收藏' })],
+    bookList: [
+      getDefaultDict({ id: DictId.articleCollect, en_name: DictId.articleCollect, name: '收藏' }),
+    ],
     studyIndex: -1,
   },
   dictListVersion: 1,
@@ -126,7 +128,7 @@ export const useBaseStore = defineStore('base', {
       //当能除尽时，应该加1
       let s = this.sdict.lastLearnIndex % this.sdict.perDayStudyNumber
       let d = this.sdict.lastLearnIndex / this.sdict.perDayStudyNumber
-      return Math.floor(s === 0 ? d + 1 : d)
+      return Math.floor(s === 0 ?( d + 1) : d)
     },
     currentStudyProgress(): number {
       if (!this.sdict.length) return 0
@@ -135,7 +137,9 @@ export const useBaseStore = defineStore('base', {
     getDictCompleteDate(): number {
       if (!this.sdict.length) return 0
       if (!this.sdict.perDayStudyNumber) return 0
-      return Math.ceil((this.sdict.length - this.sdict.lastLearnIndex) / this.sdict.perDayStudyNumber)
+      return Math.ceil(
+        (this.sdict.length - this.sdict.lastLearnIndex) / this.sdict.perDayStudyNumber
+      )
     },
     sbook(): Dict {
       return this.article.bookList[this.article.studyIndex] ?? {}

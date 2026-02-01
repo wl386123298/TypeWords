@@ -15,8 +15,8 @@ import Toast from '@/components/base/toast/Toast.ts'
 import DeleteIcon from '@/components/icon/DeleteIcon.vue'
 import { AppEnv, DictId, LIB_JS_URL, TourConfig } from '@/config/env.ts'
 import { getCurrentStudyWord } from '@/hooks/dict.ts'
-import EditBook from '~/components/article/EditBook.vue'
-import PracticeSettingDialog from '~/components/word/PracticeSettingDialog.vue'
+import EditBook from '@/components/article/EditBook.vue'
+import PracticeSettingDialog from '@/components/word/PracticeSettingDialog.vue'
 import { useBaseStore } from '@/stores/base.ts'
 import { useRuntimeStore } from '@/stores/runtime.ts'
 import { useSettingStore } from '@/stores/setting.ts'
@@ -26,7 +26,6 @@ import { MessageBox } from '@/utils/MessageBox.tsx'
 import { nanoid } from 'nanoid'
 import { computed, onMounted, reactive, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { useI18n } from 'vue-i18n'
 import { wordDelete } from '@/apis/words.ts'
 import { copyOfficialDict } from '@/apis/dict.ts'
 import { PRACTICE_WORD_CACHE } from '@/utils/cache.ts'
@@ -37,7 +36,6 @@ const base = useBaseStore()
 const router = useRouter()
 const route = useRoute()
 const isMob = isMobile()
-const { t: $t } = useI18n()
 let loading = $ref(false)
 let allList = $ref([])
 
@@ -228,7 +226,7 @@ onMounted(async () => {
     runtimeStore.editDict = getDefaultDict()
   } else {
     if (!runtimeStore.editDict.id) {
-      return router.push('/words')
+      return router.push('/word')
     } else {
       if (
         !runtimeStore.editDict.words.length &&
@@ -275,7 +273,6 @@ const { nav } = useNav()
 
 //todo 可以和首页合并
 async function startPractice(query = {}) {
-  console.log(1)
   localStorage.removeItem(PRACTICE_WORD_CACHE.key)
   studyLoading = true
   await base.changeDict(runtimeStore.editDict)
@@ -307,7 +304,7 @@ async function startTest() {
   loading = true
   await base.changeDict(runtimeStore.editDict)
   loading = false
-  nav('words-test/' + store.sdict.id)
+  nav('word-test/' + store.sdict.id)
 }
 
 let exportLoading = $ref(false)
@@ -384,8 +381,7 @@ function importData(e) {
               tableRef.value.getData()
               syncDictInMyStudyList()
               Toast.success('导入成功！')
-            },
-            { t: $t }
+            }
           )
         } else {
           tableRef.value.closeImportDialog()
@@ -569,21 +565,19 @@ defineRender(() => {
             <div class="dict-title absolute page-title text-align-center w-full">{runtimeStore.editDict.name}</div>
             <div class="dict-actions flex">
               <BaseButton loading={studyLoading || loading} type="info" onClick={() => (isEdit = true)}>
-                {$t('edit')}
+                编辑
               </BaseButton>
               <BaseButton loading={studyLoading || loading} type="info" onClick={startTest}>
-                {$t('test')}
+                测试
               </BaseButton>
               <BaseButton id="study" loading={studyLoading || loading} onClick={addMyStudyList}>
-                {$t('learn')}
+                学习
               </BaseButton>
             </div>
           </div>
           {dict.description && (
             <>
-              <div class="text-lg  mt-2">
-                {$t('introduction')}：{dict.description}
-              </div>
+              <div class="text-lg  mt-2">介绍：{dict.description}</div>
               <div class="line my-3"></div>
             </>
           )}
@@ -592,10 +586,10 @@ defineRender(() => {
           {isMob && isOperate && (
             <div class="tab-navigation mb-3">
               <div class={`tab-item ${activeTab === 'list' ? 'active' : ''}`} onClick={() => (activeTab = 'list')}>
-                {$t('word_list')}
+                单词列表
               </div>
               <div class={`tab-item ${activeTab === 'edit' ? 'active' : ''}`} onClick={() => (activeTab = 'edit')}>
-                {wordForm.id ? $t('edit') : $t('add')}{$t('word')}
+                {wordForm.id ? '编辑' : '添加'}单词
               </div>
             </div>
           )}
@@ -644,7 +638,7 @@ defineRender(() => {
             </div>
             {isOperate ? (
               <div class={`edit-section flex-1 flex flex-col ${isMob && activeTab !== 'edit' ? 'mobile-hidden' : ''}`}>
-                <div class="common-title">{wordForm.id ? $t('edit') : $t('add')}{$t('word')}</div>
+                <div class="common-title">{wordForm.id ? '修改' : '添加'}单词</div>
                 <Form
                   class="flex-1 overflow-auto pr-2"
                   ref={e => (wordFormRef = e)}
@@ -712,10 +706,10 @@ defineRender(() => {
                 </Form>
                 <div class="center">
                   <BaseButton type="info" onClick={closeWordForm}>
-                    {$t('close')}
+                    关闭
                   </BaseButton>
                   <BaseButton type="primary" onClick={onSubmitWord}>
-                    {$t('save')}
+                    保存
                   </BaseButton>
                 </div>
               </div>
@@ -736,7 +730,7 @@ defineRender(() => {
               }}
             />
             <div class="dict-title absolute page-title text-align-center w-full">
-              {runtimeStore.editDict.id ? $t('edit_dict') : $t('create_dict')}
+              {runtimeStore.editDict.id ? '修改' : '创建'}词典
             </div>
           </div>
           <div class="center">

@@ -24,23 +24,14 @@ import Toast from '@/components/base/toast/Toast.ts'
 import BaseButton from '@/components/BaseButton.vue'
 import { getDefaultDict } from '@/types/func.ts'
 import DeleteIcon from '@/components/icon/DeleteIcon.vue'
-import PracticeSettingDialog from '~/components/word/PracticeSettingDialog.vue'
-import ChangeLastPracticeIndexDialog from '~/components/word/ChangeLastPracticeIndexDialog.vue'
+import PracticeSettingDialog from '@/components/word/PracticeSettingDialog.vue'
+import ChangeLastPracticeIndexDialog from '@/components/word/ChangeLastPracticeIndexDialog.vue'
 import { useSettingStore } from '@/stores/setting.ts'
 import { useFetch } from '@vueuse/core'
-import {
-  APP_NAME,
-  AppEnv,
-  DICT_LIST,
-  Host,
-  LIB_JS_URL,
-  Origin,
-  TourConfig,
-  WordPracticeModeNameMap,
-} from '@/config/env.ts'
+import { AppEnv, DICT_LIST, Host, LIB_JS_URL, Origin, TourConfig, WordPracticeModeNameMap } from '@/config/env.ts'
 import { myDictList } from '@/apis'
-import PracticeWordListDialog from '~/components/word/PracticeWordListDialog.vue'
-import ShufflePracticeSettingDialog from '~/components/word/ShufflePracticeSettingDialog.vue'
+import PracticeWordListDialog from '@/components/word/PracticeWordListDialog.vue'
+import ShufflePracticeSettingDialog from '@/components/word/ShufflePracticeSettingDialog.vue'
 import { deleteDict } from '@/apis/dict.ts'
 import OptionButton from '@/components/base/OptionButton.vue'
 import { getPracticeWordCache, setPracticeWordCache } from '@/utils/cache.ts'
@@ -54,9 +45,6 @@ const runtimeStore = useRuntimeStore()
 let loading = $ref(true)
 let isSaveData = $ref(false)
 
-useHead({
-  title: APP_NAME + ' 单词',
-})
 let currentStudy = $ref({
   new: [],
   review: [],
@@ -154,12 +142,12 @@ function startPractice(practiceMode: WordPracticeMode, resetCache: boolean = fal
 }
 
 function freePractice() {
-  startPractice(WordPracticeMode.Free, settingStore.wordPracticeMode !== WordPracticeMode.Free)
+  startPractice(WordPracticeMode.Free, settingStore.wordPracticeMode !== WordPracticeMode.Free && isSaveData)
 }
 function systemPractice() {
   startPractice(
     settingStore.wordPracticeMode === WordPracticeMode.Free ? WordPracticeMode.System : settingStore.wordPracticeMode,
-    settingStore.wordPracticeMode === WordPracticeMode.Free
+    settingStore.wordPracticeMode === WordPracticeMode.Free && isSaveData
   )
 }
 
@@ -171,7 +159,7 @@ let showPracticeWordListDialog = $ref(false)
 async function goDictDetail(val: DictResource) {
   if (!val.id) return nav('dict-list')
   runtimeStore.editDict = getDefaultDict(val)
-  nav('/dict', {})
+  nav('dict-detail', {})
 }
 
 let isManageDict = $ref(false)
@@ -273,10 +261,7 @@ async function saveLastPracticeIndex(e) {
 
 const { data: recommendDictList, isFetching } = useFetch(resourceWrap(DICT_LIST.WORD.RECOMMENDED)).json()
 
-let isNewHost = $ref(true)
-onMounted(() => {
-  isNewHost = window.location.host === Host
-})
+let isNewHost = $ref(window.location.host === Host)
 
 const systemPracticeText = $computed(() => {
   if (settingStore.wordPracticeMode === WordPracticeMode.Free) {
@@ -304,7 +289,7 @@ const systemPracticeText = $computed(() => {
             <IconFluentBookNumber20Filled class="text-xl color-link" />
           </div>
           <div @click="goDictDetail(store.sdict)" class="text-2xl font-bold cursor-pointer">
-            {{ store.sdict.name || $t('no_dict_selected') }}
+            {{ store.sdict.name || '当前无正在学习的词典' }}
           </div>
         </div>
 
@@ -312,7 +297,7 @@ const systemPracticeText = $computed(() => {
           <div class="mt-4 space-y-2">
             <div class="text-sm flex justify-between">
               <span v-opacity="store.sdict.id && store.sdict.lastLearnIndex < store.sdict.length">
-                {{ $t('estimated_completion') }}：{{
+                预计完成日期：{{
                   _getAccomplishDate(
                     store.sdict.words.length - store.sdict.lastLearnIndex,
                     store.sdict.perDayStudyNumber
@@ -324,14 +309,14 @@ const systemPracticeText = $computed(() => {
 
             <div class="text-sm flex justify-between">
               <span>{{ progressTextLeft }}</span>
-              <span> {{ store.sdict?.lastLearnIndex }} / {{ store.sdict.length }} 词</span>
+              <span> {{ store.sdict?.lastLearnIndex }} / {{ store.sdict.words.length }} 词</span>
             </div>
           </div>
           <div class="flex items-center mt-4 gap-4">
             <BaseButton type="info" size="small" @click="router.push('/dict-list')">
               <div class="center gap-1">
                 <IconFluentArrowSwap20Regular />
-                <span>{{ $t('select_dict') }}</span>
+                <span>选择词典</span>
               </div>
             </BaseButton>
             <PopConfirm
@@ -342,7 +327,7 @@ const systemPracticeText = $computed(() => {
               <BaseButton type="info" size="small" v-if="store.sdict.id">
                 <div class="center gap-1">
                   <IconFluentSlideTextTitleEdit20Regular />
-                  <span>{{ $t('change_progress') }}</span>
+                  <span>更改进度</span>
                 </div>
               </BaseButton>
             </PopConfirm>
@@ -350,11 +335,11 @@ const systemPracticeText = $computed(() => {
         </template>
 
         <div class="flex items-center gap-4 mt-2 flex-1" v-else>
-          <div class="title">{{ $t('select_dict_to_start') }}</div>
+          <div class="title">请选择一本词典开始学习</div>
           <BaseButton id="step1" type="primary" size="large" @click="router.push('/dict-list')">
             <div class="center gap-1">
               <IconFluentAdd16Regular />
-              <span>{{ $t('select_dict') }}</span>
+              <span>选择词典</span>
             </div>
           </BaseButton>
         </div>
@@ -367,39 +352,39 @@ const systemPracticeText = $computed(() => {
               <IconFluentStar20Filled class="text-lg color-amber" />
             </div>
             <div class="text-xl font-bold">
-              {{ isSaveData ? $t('last_task') : $t('today_task') }}
+              {{ isSaveData ? '上次任务' : '今日任务' }}
             </div>
             <span class="color-link cursor-pointer" v-if="store.sdict.id" @click="showPracticeWordListDialog = true"
-              >{{ $t('word_list') }}</span
+            >词表</span
             >
           </div>
           <div class="flex gap-1 items-center" v-if="store.sdict.id">
-            {{ $t('daily_goal') }}
+            每日目标
             <div style="color: #ac6ed1" class="bg-third px-2 h-10 flex center text-2xl rounded">
               {{ store.sdict.id ? store.sdict.perDayStudyNumber : 0 }}
             </div>
-            {{ $t('words_count') }}
+            个单词
             <PopConfirm
               :disabled="!isSaveData"
               title="当前存在未完成的学习任务，修改会重新生成学习任务，是否继续？"
               @confirm="check(() => (showPracticeSettingDialog = true))"
             >
-              <BaseButton type="info" size="small">{{ $t('change') }} </BaseButton>
+              <BaseButton type="info" size="small">更改 </BaseButton>
             </PopConfirm>
           </div>
         </div>
         <div class="flex mt-4 justify-between">
           <div class="stat">
             <div class="num">{{ currentStudy.new.length }}</div>
-            <div class="txt">{{ $t('new_words_count') }}</div>
+            <div class="txt">新词数</div>
           </div>
           <div class="stat">
             <div class="num">{{ currentStudy.review.length }}</div>
-            <div class="txt">{{ $t('review_last') }}</div>
+            <div class="txt">复习上次</div>
           </div>
           <div class="stat">
             <div class="num">{{ currentStudy.write.length }}</div>
-            <div class="txt">{{ $t('review_previous') }}</div>
+            <div class="txt">复习之前</div>
           </div>
         </div>
         <div class="flex items-end mt-4 gap-4 btn-no-margin">
@@ -427,7 +412,7 @@ const systemPracticeText = $computed(() => {
                 "
                 @click="startPractice(WordPracticeMode.System, true)"
               >
-                {{ $t('smart_learning') }}
+                智能学习
               </BaseButton>
 
               <BaseButton
@@ -436,7 +421,7 @@ const systemPracticeText = $computed(() => {
                 :disabled="!currentStudy.review.length && !currentStudy.write.length"
                 @click="startPractice(WordPracticeMode.Review, true)"
               >
-                {{ $t('review') }}
+                复习
               </BaseButton>
               <BaseButton
                 class="w-full"
@@ -444,7 +429,7 @@ const systemPracticeText = $computed(() => {
                 :disabled="store.sdict.lastLearnIndex < 10 && !store.sdict.complete"
                 @click="check(() => (showShufflePracticeSettingDialog = true))"
               >
-                {{ $t('random_review') }}
+                随机复习
               </BaseButton>
 
               <!--              <BaseButton-->
@@ -481,7 +466,7 @@ const systemPracticeText = $computed(() => {
             <div class="flex items-center gap-2">
               <span class="line-height-[2]">
                 {{
-                  settingStore.wordPracticeMode === WordPracticeMode.Free && isSaveData ? $t('continue_free_practice') : $t('free_practice')
+                  settingStore.wordPracticeMode === WordPracticeMode.Free && isSaveData ? '继续自由练习' : '自由练习'
                 }}
               </span>
               <IconStreamlineColorPenDrawFlat class="text-xl" />
@@ -493,10 +478,10 @@ const systemPracticeText = $computed(() => {
 
     <div class="card flex flex-col">
       <div class="flex justify-between">
-        <div class="title">{{ $t('my_dictionaries') }}</div>
+        <div class="title">我的词典</div>
         <div class="flex gap-4 items-center">
           <PopConfirm title="确认删除所有选中词典？" @confirm="handleBatchDel" v-if="selectIds.length">
-            <BaseIcon class="del" :title="$t('delete')">
+            <BaseIcon class="del" title="删除">
               <DeleteIcon />
             </BaseIcon>
           </PopConfirm>
@@ -511,9 +496,9 @@ const systemPracticeText = $computed(() => {
               }
             "
           >
-            {{ isManageDict ? $t('cancel') : $t('manage_dict') }}
+            {{ isManageDict ? '取消' : '管理词典' }}
           </div>
-          <div class="color-link cursor-pointer" @click="nav('/dict', { isAdd: true })">{{ $t('create_personal_dict') }}</div>
+          <div class="color-link cursor-pointer" @click="nav('dict-detail', { isAdd: true })">创建个人词典</div>
         </div>
       </div>
       <div class="flex gap-4 flex-wrap mt-4">
@@ -533,9 +518,9 @@ const systemPracticeText = $computed(() => {
 
     <div class="card flex flex-col overflow-hidden" v-loading="isFetching">
       <div class="flex justify-between">
-        <div class="title">{{ $t('recommend') }}</div>
+        <div class="title">推荐</div>
         <div class="flex gap-4 items-center">
-          <div class="color-link cursor-pointer" @click="router.push('/dict-list')">{{ $t('more') }}</div>
+          <div class="color-link cursor-pointer" @click="router.push('/dict-list')">更多</div>
         </div>
       </div>
 

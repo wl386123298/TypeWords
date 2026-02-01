@@ -1,6 +1,5 @@
 <script setup lang="ts">
-import { computed, nextTick, onBeforeUnmount, onMounted, provide, ref, useSlots, watch } from 'vue'
-import type {VNode } from 'vue'
+import { computed, nextTick, onBeforeUnmount, onMounted, provide, ref, useSlots, VNode, watch } from 'vue'
 import { useWindowClick } from '@/hooks/event.ts'
 
 interface Option {

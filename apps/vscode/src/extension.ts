@@ -60,7 +60,7 @@ class ChatPanel {
 
   private _getHtmlForWebview(webview: vscode.Webview) {
     const websiteUrl = 'https://typewords.cc'
-    const cdnUrl = 'http://tw2.cc'
+    const cdnUrl = 'http://tw.cc'
 
     // 生成 nonce 用于 CSP
     const nonce = Buffer.from(Date.now().toString()).toString('base64')
@@ -83,11 +83,9 @@ class ChatPanel {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>单词练习</title>
 
-  <script type="module" crossorigin src="${cdnUrl}/assets/index-D3FuVbP-.js"></script>
-  <link rel="modulepreload" crossorigin href="${cdnUrl}/assets/icons-Ah3R2230.js">
-  <link rel="modulepreload" crossorigin href="${cdnUrl}/assets/utils-OjAQa_FL.js">
-  <link rel="stylesheet" crossorigin href="${cdnUrl}/assets/utils-CmNt3aT_.css">
-  <link rel="stylesheet" crossorigin href="${cdnUrl}/assets/index-CtjmmShG.css">
+
+  <script type="module" crossorigin src="${cdnUrl}/assets/index-U_Sipy1e.js"></script>
+  <link rel="stylesheet" crossorigin href="${cdnUrl}/assets/index-DxDOOQl8.css">
 </head>
 <body>
     <div id="app"></div>

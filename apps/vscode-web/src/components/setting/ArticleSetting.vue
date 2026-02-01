@@ -9,22 +9,22 @@ const settingStore = useSettingStore()
 
 <template>
   <div>
-    <SettingItem :mainTitle="$t('sound_effect')" />
-    <SettingItem :title="$t('auto_play_sentence')">
+    <SettingItem mainTitle="音效" />
+    <SettingItem title="自动播放句子">
       <Switch v-model="settingStore.articleSound" />
     </SettingItem>
-    <SettingItem :title="$t('play_next_after_end')">
+    <SettingItem title="结束后播放下一篇">
       <Switch v-model="settingStore.articleAutoPlayNext" />
     </SettingItem>
-    <SettingItem :title="$t('volume')">
+    <SettingItem title="音量">
       <Slider v-model="settingStore.articleSoundVolume" showText showValue unit="%" />
     </SettingItem>
-    <SettingItem :title="$t('speed')">
+    <SettingItem title="倍速">
       <Slider v-model="settingStore.articleSoundSpeed" :step="0.1" :min="0.5" :max="3" showText showValue />
     </SettingItem>
 
     <div class="line"></div>
-    <SettingItem :title="$t('ignore_symbols_numbers_names')">
+    <SettingItem title="输入时忽略符号/数字/人名">
       <Switch v-model="settingStore.ignoreSymbol" />
     </SettingItem>
   </div>

@@ -1,28 +1,26 @@
 <script setup lang="ts">
-import Toast from '~/components/base/toast/Toast'
-import BaseButton from '~/components/BaseButton.vue'
-import { useWordOptions } from '~/hooks/dict'
-import { usePlayBeep, usePlayKeyboardAudio, usePlayWordAudio } from '~/hooks/sound'
-import QuestionForm from '~/components/article/QuestionForm.vue'
-import Space from '~/components/article/Space.vue'
-import TypingWord from '~/components/article/TypingWord.vue'
-import { useBaseStore } from '~/stores/base'
-import { usePracticeStore } from '~/stores/practice'
-import { useSettingStore } from '~/stores/setting'
-import { getDefaultArticle, getDefaultWord } from '~/types/func'
-import type { Article, ArticleWord, Sentence, Word } from '~/types/types'
-import { _dateFormat, _nextTick, isMobile, msToHourMinute, total } from '~/utils'
-import { emitter, EventKey, useEvents } from '~/utils/eventBus'
+import Toast from '@/components/base/toast/Toast.ts'
+import BaseButton from '@/components/BaseButton.vue'
+import { useWordOptions } from '@/hooks/dict.ts'
+import { usePlayBeep, usePlayKeyboardAudio, usePlayWordAudio } from '@/hooks/sound.ts'
+import QuestionForm from '@/components/article/QuestionForm.vue'
+import Space from '@/components/article/Space.vue'
+import TypingWord from '@/components/article/TypingWord.vue'
+import { useBaseStore } from '@/stores/base.ts'
+import { usePracticeStore } from '@/stores/practice.ts'
+import { useSettingStore } from '@/stores/setting.ts'
+import { getDefaultArticle, getDefaultWord } from '@/types/func.ts'
+import type { Article, ArticleWord, Sentence, Word } from '@/types/types.ts'
+import { _dateFormat, _nextTick, isMobile, msToHourMinute, total } from '@/utils'
+import { emitter, EventKey, useEvents } from '@/utils/eventBus.ts'
 import ContextMenu from '@imengyu/vue3-context-menu'
 import '@imengyu/vue3-context-menu/lib/vue3-context-menu.css'
 import nlp from 'compromise/three'
 import { nanoid } from 'nanoid'
 import { inject, onMounted, onUnmounted, watch } from 'vue'
-import { useI18n } from 'vue-i18n'
-const { t: $t } = useI18n()
 
-import { getPracticeArticleCache, setPracticeArticleCache } from '~/utils/cache'
-import { PracticeArticleWordType, ShortcutKey } from '~/types/enum'
+import { getPracticeArticleCache, setPracticeArticleCache } from '@/utils/cache.ts'
+import { PracticeArticleWordType, ShortcutKey } from '@/types/enum.ts'
 
 interface IProps {
   article: Article
@@ -120,13 +118,10 @@ watch(
   n => {
     if (n) {
       _nextTick(() => {
-        window.scrollTo({
-          top: document.documentElement.scrollHeight,
-          behavior: 'smooth',
-        })
+        typeArticleRef?.scrollTo({ top: typeArticleRef.scrollHeight, behavior: 'smooth' })
       })
     } else {
-      window.scrollTo({ top: 0, behavior: 'smooth' })
+      typeArticleRef?.scrollTo({ top: 0, behavior: 'smooth' })
     }
   }
 )
@@ -134,6 +129,7 @@ watch(
 function init() {
   if (!props.article.id) return
   isSpace = isEnd = false
+
   let d = getPracticeArticleCache()
   if (d) {
     sectionIndex = d.practiceData.sectionIndex
@@ -155,7 +151,7 @@ function init() {
         })
       })
     })
-    window.scrollTo({ top: 0 })
+    typeArticleRef?.scrollTo({ top: 0, behavior: 'smooth' })
   }
   _nextTick(() => {
     emit('play', { sentence: props.article.sections[sectionIndex][sentenceIndex], handle: false })
@@ -179,20 +175,10 @@ function checkCursorPosition(a = sectionIndex, b = sentenceIndex, c = wordIndex)
         // 获取 articleWrapper 的位置
         const articleRect = articleWrapperRef.getBoundingClientRect()
         const endRect = end.getBoundingClientRect()
-        // 判断元素是否在视口内
-        const isInViewport = endRect.top >= 0 && endRect.top <= window.innerHeight
-        if (isInViewport) {
-          // 如果在视口内且位置大于屏幕的0.7高度，就滚动屏幕的1/3
-          if (endRect.y > window.innerHeight * 0.7) {
-            window.scrollTo({
-              top: document.documentElement.scrollTop + window.innerHeight * 0.3,
-              behavior: 'smooth',
-            })
-          }
-        } else {
-          // 如果不在视口内，滚动到屏幕中间
-          window.scrollTo({
-            top: document.documentElement.scrollTop + endRect.top - window.innerHeight / 2,
+        //如果当前输入位置大于屏幕的0.7高度，就滚动屏幕的1/3
+        if (endRect.y > window.innerHeight * 0.7) {
+          typeArticleRef?.scrollTo({
+            top: typeArticleRef.scrollTop + window.innerHeight * 0.3,
             behavior: 'smooth',
           })
         }
@@ -541,7 +527,7 @@ function onContextMenu(e: MouseEvent, sentence: Sentence, i, j, w) {
     y: e.y,
     items: [
       {
-        label: $t('collect_word'),
+        label: '收藏单词',
         onClick: () => {
           let word = props.article.sections[i][j].words[w]
           let text = word.word
@@ -557,48 +543,48 @@ function onContextMenu(e: MouseEvent, sentence: Sentence, i, j, w) {
           if (!text.length) text = word.word
           console.log('text', text)
           toggleWordCollect(getDefaultWord({ word: text, id: nanoid() }))
-          Toast.success(text + ' ' + $t('add_success'))
+          Toast.success(text + ' 添加成功')
         },
       },
       {
-        label: $t('copy'),
+        label: '复制',
         children: [
           {
-            label: $t('copy_sentence'),
+            label: '复制句子',
             onClick: () => {
               navigator.clipboard.writeText(sentence.text).then(r => {
-                Toast.success($t('copied'))
+                Toast.success('已复制')
               })
             },
           },
           {
-            label: $t('copy_word'),
+            label: '复制单词',
             onClick: () => {
               let word = props.article.sections[i][j].words[w]
               navigator.clipboard.writeText(word.word).then(r => {
-                Toast.success($t('copied'))
+                Toast.success('已复制')
               })
             },
           },
         ],
       },
       {
-        label: $t('start_from_here'),
+        label: '从这开始',
         onClick: () => {
           jump(i, j, w + 1, sentence)
         },
       },
       {
-        label: $t('play_sentence'),
+        label: '播放句子',
         onClick: () => {
           emit('play', { sentence: sentence, handle: true })
         },
       },
       {
-        label: $t('grammar_analysis'),
+        label: '语法分析',
         onClick: () => {
           navigator.clipboard.writeText(sentence.text).then(r => {
-            Toast.success($t('copied_open_grammar'))
+            Toast.success('已复制！随后将打开语法分析网站！')
             setTimeout(() => {
               window.open('https://enpuz.com/')
             }, 1000)
@@ -606,17 +592,17 @@ function onContextMenu(e: MouseEvent, sentence: Sentence, i, j, w) {
         },
       },
       {
-        label: $t('youdao_translate'),
+        label: '有道词典翻译',
         children: [
           {
-            label: $t('translate_word'),
+            label: '翻译单词',
             onClick: () => {
               let word = props.article.sections[i][j].words[w]
               window.open(`https://www.youdao.com/result?word=${word.word}&lang=en`, '_blank')
             },
           },
           {
-            label: $t('translate_sentence'),
+            label: '翻译句子',
             onClick: () => {
               window.open(`https://www.youdao.com/result?word=${sentence.text}&lang=en`, '_blank')
             },
@@ -783,22 +769,22 @@ const currentPractice = inject('currentPractice', [])
     </div>
 
     <div class="options flex justify-center" v-if="isEnd">
-      <BaseButton @click="emit('replay')">{{ $t('restart_practice') }} </BaseButton>
+      <BaseButton @click="emit('replay')">重新练习 </BaseButton>
       <BaseButton v-if="store.sbook.lastLearnIndex < store.sbook.articles.length - 1" @click="emit('next')"
-        >{{ $t('next_article') }}
+        >下一篇
       </BaseButton>
     </div>
 
     <div class="font-family text-base pr-2 mb-50 mt-10" v-if="currentPractice.length && isEnd">
-      <div class="text-2xl font-bold">{{ $t('learning_record') }}</div>
-      <div class="mt-1 mb-3">{{ $t('total_learning_time') }}：{{ msToHourMinute(total(currentPractice, 'spend')) }}</div>
+      <div class="text-2xl font-bold">学习记录</div>
+      <div class="mt-1 mb-3">总学习时长：{{ msToHourMinute(total(currentPractice, 'spend')) }}</div>
       <div
         class="item border border-item border-solid mt-2 p-2 bg-[var(--bg-history)] rounded-md flex justify-between"
         :class="i === currentPractice.length - 1 && 'color-red!'"
         v-for="(item, i) in currentPractice"
       >
         <span :class="i === currentPractice.length - 1 ? 'color-red' : 'color-gray'"
-          >{{ i === currentPractice.length - 1 ? $t('current') : i + 1 }}.&nbsp;&nbsp;{{ _dateFormat(item.startDate) }}</span
+          >{{ i === currentPractice.length - 1 ? '当前' : i + 1 }}.&nbsp;&nbsp;{{ _dateFormat(item.startDate) }}</span
         >
         <span>{{ msToHourMinute(item.spend) }}</span>
       </div>
@@ -806,7 +792,7 @@ const currentPractice = inject('currentPractice', [])
 
     <template v-if="false">
       <div class="center">
-        <BaseButton @click="showQuestions = !showQuestions">{{ $t('show_questions') }}</BaseButton>
+        <BaseButton @click="showQuestions = !showQuestions">显示题目</BaseButton>
       </div>
       <div class="toggle" v-if="showQuestions">
         <QuestionForm :questions="article.questions" :duration="300" :immediateFeedback="false" :randomize="true" />
@@ -827,7 +813,7 @@ $article-lh: 2.4;
   color: var(--color-article);
   width: var(--article-width);
   font-size: 1.6rem;
-  margin-bottom: 20rem;
+  margin-bottom: 10rem;
 
   .mobile-input {
     position: absolute;

@@ -1,5 +1,9 @@
-import type { Language, TranslateQueryResult } from "./translator";
-import { Translator, TranslateError } from "./translator";
+import {
+  Language,
+  Translator,
+  TranslateError,
+  TranslateQueryResult
+} from "./translator";
 import md5 from "md5";
 import qs from "../qs";
 
@@ -67,8 +71,8 @@ export class Baidu extends Translator<BaiduConfig> {
     };
 
     const salt = Date.now();
-    const { endpoint } = this;
-    const { appid, key } = config;
+    const {endpoint} = this;
+    const {appid, key} = config;
 
     const res = await this.request<BaiduTranslateResult | BaiduTranslateError>(
       endpoint,
@@ -86,7 +90,7 @@ export class Baidu extends Translator<BaiduConfig> {
       throw new TranslateError("NETWORK_ERROR");
     });
 
-    const { data } = res;
+    const {data} = res;
 
     if ((data as BaiduTranslateError).error_code) {
       console.error(
@@ -99,7 +103,7 @@ export class Baidu extends Translator<BaiduConfig> {
       trans_result: transResult,
       from: langDetected
     } = data as BaiduTranslateResult;
-    const transParagraphs = transResult.map(({ dst }) => dst);
+    const transParagraphs = transResult.map(({dst}) => dst);
     const detectedFrom = Baidu.langMapReverse.get(langDetected) as Language;
 
     return {
@@ -107,7 +111,7 @@ export class Baidu extends Translator<BaiduConfig> {
       from: detectedFrom,
       to,
       origin: {
-        paragraphs: transResult.map(({ src }) => src),
+        paragraphs: transResult.map(({src}) => src),
         tts: await this.textToSpeech(text, detectedFrom)
       },
       trans: {

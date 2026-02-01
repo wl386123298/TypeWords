@@ -1,7 +1,7 @@
 <script setup lang="ts">
 
 import BaseButton from "@/components/BaseButton.vue";
-import { useI18n } from 'vue-i18n';
+
 import {watchEffect} from "vue";
 import Textarea from "@/components/base/Textarea.vue";
 import Toast from "@/components/base/toast/Toast.ts";
@@ -32,10 +32,8 @@ function save() {
   edit = false
 }
 
-const { t: $t } = useI18n()
-
 function toggle() {
-  if (props.disabled) return Toast.info($t('wait_translation'))
+  if (props.disabled) return Toast.info('请等候翻译完成')
   edit = !edit
   editVal = props.value
 }
@@ -55,8 +53,8 @@ function toggle() {
         :input-style="`color: var(--color-font-1);font-size: 1rem;`"
     />
     <div class="flex justify-end mt-2">
-      <BaseButton @click="toggle">{{ $t('cancel') }}</BaseButton>
-      <BaseButton @click="save">{{ $t('apply') }}</BaseButton>
+      <BaseButton @click="toggle">取消</BaseButton>
+      <BaseButton @click="save">应用</BaseButton>
     </div>
   </div>
   <div

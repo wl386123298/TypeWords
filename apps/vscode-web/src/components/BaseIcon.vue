@@ -41,7 +41,12 @@ $w: 1.4rem;
   transition: all .3s;
 
   &:hover:not(.disabled,.noBg) {
-    background: var(--color-fourth);
+    background: var(--color-icon-hightlight);
+    color: white;
+
+    :deep(svg) {
+      color: white;
+    }
   }
 
   &.disabled {

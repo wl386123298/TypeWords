@@ -19,7 +19,7 @@ provide('tabIndex', computed(() => tabIndex))
           <slot name="title"></slot>
         </div>
         <Tooltip
-            :title="`${$t('close')}(${settingStore.shortcutKeyMap[ShortcutKey.TogglePanel]})`"
+            :title="`关闭(${settingStore.shortcutKeyMap[ShortcutKey.TogglePanel]})`"
         >
           <Close @click="settingStore.showPanel = false"/>
         </Tooltip>

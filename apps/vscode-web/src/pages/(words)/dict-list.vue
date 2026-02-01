@@ -31,7 +31,7 @@ function selectDict(e) {
 
 async function getDictDetail(val: DictResource) {
   runtimeStore.editDict = getDefaultDict(val)
-  nav('/dict', {from: 'list'})
+  nav('dict-detail', {from: 'list'})
 }
 
 
@@ -120,12 +120,12 @@ watch(dict_list, (val) => {
         <BackIcon class="z-2" @click='router.back'/>
         <div class="flex flex-1 gap-4" v-if="showSearchInput">
           <BaseInput clearable placeholder="请输入词典名称/缩写/类别" v-model="searchKey" class="flex-1" autofocus/>
-          <BaseButton @click="showSearchInput = false, searchKey = ''">{{ $t('cancel') }}</BaseButton>
+          <BaseButton @click="showSearchInput = false, searchKey = ''">取消</BaseButton>
         </div>
         <div class="py-1 flex flex-1 justify-end" v-else>
-          <span class="page-title absolute w-full center">{{ $t('dict_list') }}</span>
+          <span class="page-title absolute w-full center">词典列表</span>
           <BaseIcon
-            :title="$t('search')"
+            title="搜索"
             @click="showSearchInput = true"
             class="z-1"
             icon="fluent:search-24-regular">

@@ -1,7 +1,5 @@
-import { getDefaultBaseState, useBaseStore } from '@/stores/base'
-import type { BaseState } from '@/stores/base'
-import { getDefaultSettingState } from '@/stores/setting'
-import type { SettingState } from '@/stores/setting'
+import { BaseState, getDefaultBaseState, useBaseStore } from '@/stores/base'
+import { getDefaultSettingState, SettingState } from '@/stores/setting'
 import type { Dict, DictResource } from '@/types/types'
 import { useRouter } from 'vue-router'
 import { useRuntimeStore } from '@/stores/runtime'
@@ -151,7 +149,6 @@ export function shakeCommonDict(n: BaseState): BaseState {
 }
 
 export function isMobile(): boolean {
-  if (import.meta.server) return false
   return /Mobi|iPhone|Android|ipad|tablet/i.test(window.navigator.userAgent)
 }
 
@@ -455,7 +452,7 @@ export async function loadJsLib(key: string, url: string) {
   return new Promise((resolve, reject) => {
     const script = document.createElement('script')
     // 判断是否是 .mjs 文件，如果是，则使用 type="module"
-    if (url.includes('.mjs')) {
+    if (url.endsWith('.mjs')) {
       script.type = 'module' // 需要加上 type="module"
       script.src = url
       script.onload = async () => {

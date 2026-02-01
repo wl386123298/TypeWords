@@ -1,5 +1,5 @@
-import type {Language} from "../languages";
-import type {AxiosInstance} from "axios";
+import {Language} from "../languages";
+import {AxiosInstance} from "axios";
 
 export type Languages = Array<Language>;
 

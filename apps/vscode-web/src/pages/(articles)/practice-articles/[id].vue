@@ -13,9 +13,9 @@ import { genArticleSectionData, usePlaySentenceAudio } from '@/hooks/article.ts'
 import { useArticleOptions } from '@/hooks/dict.ts'
 import { useDisableEventListener, useOnKeyboardEventListener, useStartKeyboardEventListener } from '@/hooks/event.ts'
 import useTheme from '@/hooks/theme.ts'
-import ArticleAudio from '~/components/article/ArticleAudio.vue'
-import EditSingleArticleModal from '~/components/article/EditSingleArticleModal.vue'
-import TypingArticle from '~/components/article/TypingArticle.vue'
+import ArticleAudio from '@/components/article/ArticleAudio.vue'
+import EditSingleArticleModal from '@/components/article/EditSingleArticleModal.vue'
+import TypingArticle from '@/components/article/TypingArticle.vue'
 import { useBaseStore } from '@/stores/base.ts'
 import { usePracticeStore } from '@/stores/practice.ts'
 import { useRuntimeStore } from '@/stores/runtime.ts'
@@ -130,7 +130,6 @@ async function init() {
 
 const initAudio = () => {
   _nextTick(() => {
-    if (import.meta.server) return
     audioRef.volume = settingStore.articleSoundVolume / 100
     audioRef.playbackRate = settingStore.articleSoundSpeed
   })
@@ -199,12 +198,7 @@ watch(
   { immediate: true, deep: true }
 )
 
-
-onActivated(() => {
-  console.log('onActivated')
-})
 onMounted(() => {
-  console.log('onMounted')
   if (store.sbook?.articles?.length) {
     articleData.list = cloneDeep(store.sbook.articles)
     getCurrentPractice()
@@ -218,8 +212,7 @@ onMounted(() => {
   }
 })
 
-function unmount() {
-  console.log('onUnmounted')
+onUnmounted(() => {
   runtimeStore.disableEventListener = false
   let cache = getPracticeArticleCache()
   //如果有缓存，则更新花费的时间；因为用户不输入不会保存数据
@@ -228,12 +221,7 @@ function unmount() {
     setPracticeArticleCache(cache)
   }
   clearInterval(timer)
-}
-
-onUnmounted(unmount)
-
-
-onDeactivated(unmount)
+})
 
 useStartKeyboardEventListener()
 useDisableEventListener(() => loading)
@@ -280,8 +268,7 @@ async function complete() {
     articleId: articleData.article.id,
     title: articleData.article.title,
     spend: statStore.spend,
-    //修正计时
-    startDate: Date.now() - statStore.spend,
+    startDate: statStore.startDate,
     total: statStore.total,
     wrong: statStore.wrong,
   }
@@ -579,7 +566,7 @@ provide('currentPractice', currentPractice)
                   :title="`开关释义显示(${settingStore.shortcutKeyMap[ShortcutKey.ToggleShowTranslate]})`"
                   @click="settingStore.translate = !settingStore.translate"
                 >
-                  <IconPhTranslate v-if="settingStore.translate" />
+                  <IconFluentTranslate16Regular v-if="settingStore.translate" />
                   <IconFluentTranslateOff16Regular v-else />
                 </BaseIcon>
 

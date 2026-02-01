@@ -1,22 +1,20 @@
 <script setup lang="ts">
-import type { Dict } from '~/types/types.ts'
-import { cloneDeep } from '~/utils'
-import Toast from '~/components/base/toast/Toast.ts'
+import type { Dict } from '@/types/types.ts'
+import { cloneDeep } from '@/utils'
+import Toast from '@/components/base/toast/Toast.ts'
 import { onMounted, reactive } from 'vue'
-import { useRuntimeStore } from '~/stores/runtime.ts'
-import { useBaseStore } from '~/stores/base.ts'
-import BaseButton from '~/components/BaseButton.vue'
-import { getDefaultDict } from '~/types/func.ts'
-import Select from '~/components/base/select/Select.vue'
-import Option from '~/components/base/select/Option.vue'
-import BaseInput from '~/components/base/BaseInput.vue'
-import Form from '~/components/base/form/Form.vue'
-import FormItem from '~/components/base/form/FormItem.vue'
-import { addDict } from '~/apis'
-import { AppEnv, DictId } from '~/config/env.ts'
+import { useRuntimeStore } from '@/stores/runtime.ts'
+import { useBaseStore } from '@/stores/base.ts'
+import BaseButton from '@/components/BaseButton.vue'
+import { getDefaultDict } from '@/types/func.ts'
+import { Option, Select } from '@/components/base/select'
+import BaseInput from '@/components/base/BaseInput.vue'
+import Form from '@/components/base/form/Form.vue'
+import FormItem from '@/components/base/form/FormItem.vue'
+import { addDict } from '@/apis'
+import { AppEnv, DictId } from '@/config/env.ts'
 import { nanoid } from 'nanoid'
-import { DictType } from '~/types/enum.ts'
-import { useI18n } from 'vue-i18n'
+import { DictType } from '@/types/enum.ts'
 
 const props = defineProps<{
   isAdd: boolean
@@ -41,11 +39,10 @@ const DefaultDictForm = {
 let dictForm: any = $ref(cloneDeep(DefaultDictForm))
 const dictFormRef = $ref()
 let loading = $ref(false)
-const { t: $t } = useI18n()
 const dictRules = reactive({
   name: [
-    { required: true, message: $t('please_enter_name'), trigger: 'blur' },
-    { max: 20, message: $t('name_max_20_chars'), trigger: 'blur' },
+    { required: true, message: '请输入名称', trigger: 'blur' },
+    { max: 20, message: '名称不能超过20个字符', trigger: 'blur' },
   ],
 })
 
@@ -60,7 +57,7 @@ async function onSubmit() {
         data.id = 'custom-dict-' + Date.now()
         data.custom = true
         if (source.bookList.find(v => v.name === data.name)) {
-          Toast.warning($t('name_already_exists'))
+          Toast.warning('已有相同名称！')
           return
         } else {
           if (AppEnv.CAN_REQUEST) {
@@ -76,7 +73,7 @@ async function onSubmit() {
           source.bookList.push(cloneDeep(data))
           runtimeStore.editDict = data
           emit('submit')
-          Toast.success($t('add_success'))
+          Toast.success('添加成功')
         }
       } else {
         let rIndex = source.bookList.findIndex(v => v.id === data.id)
@@ -96,15 +93,15 @@ async function onSubmit() {
         if (rIndex > -1) {
           source.bookList[rIndex] = getDefaultDict(data)
           emit('submit')
-          Toast.success($t('edit_success'))
+          Toast.success('修改成功')
         } else {
           source.bookList.push(getDefaultDict(data))
-          Toast.success($t('edit_and_add_to_dict'))
+          Toast.success('修改成功并加入我的词典')
         }
       }
       console.log('submit!', data)
     } else {
-      Toast.warning($t('please_fill_complete'))
+      Toast.warning('请填写完整')
     }
   })
 }
@@ -119,31 +116,31 @@ onMounted(() => {
 <template>
   <div class="w-120 mt-4">
     <Form ref="dictFormRef" :rules="dictRules" :model="dictForm" label-width="8rem">
-      <FormItem :label="$t('name')" prop="name">
+      <FormItem label="名称" prop="name">
         <BaseInput v-model="dictForm.name" />
       </FormItem>
-      <FormItem :label="$t('description')">
-        <Textarea v-model="dictForm.description" autosize></Textarea>
+      <FormItem label="描述">
+        <BaseInput v-model="dictForm.description" textarea />
       </FormItem>
-      <FormItem :label="$t('source_language')" v-if="false">
-        <Select v-model="dictForm.language" :placeholder="$t('please_select')">
-          <Option :label="$t('english')" value="en" />
-          <Option :label="$t('german')" value="de" />
-          <Option :label="$t('japanese')" value="ja" />
-          <Option :label="$t('code')" value="code" />
+      <FormItem label="原文语言" v-if="false">
+        <Select v-model="dictForm.language" placeholder="请选择选项">
+          <Option label="英语" value="en" />
+          <Option label="德语" value="de" />
+          <Option label="日语" value="ja" />
+          <Option label="代码" value="code" />
         </Select>
       </FormItem>
-      <FormItem :label="$t('target_language')" v-if="false">
-        <Select v-model="dictForm.translateLanguage" :placeholder="$t('please_select')">
-          <Option :label="$t('chinese')" value="zh-CN" />
-          <Option :label="$t('english')" value="en" />
-          <Option :label="$t('german')" value="de" />
-          <Option :label="$t('japanese')" value="ja" />
+      <FormItem label="译文语言" v-if="false">
+        <Select v-model="dictForm.translateLanguage" placeholder="请选择选项">
+          <Option label="中文" value="zh-CN" />
+          <Option label="英语" value="en" />
+          <Option label="德语" value="de" />
+          <Option label="日语" value="ja" />
         </Select>
       </FormItem>
       <div class="center">
-        <base-button type="info" @click="emit('close')">{{ $t('close') }}</base-button>
-        <base-button type="primary" :loading="loading" @click="onSubmit">{{ $t('confirm') }}</base-button>
+        <base-button type="info" @click="emit('close')">关闭</base-button>
+        <base-button type="primary" :loading="loading" @click="onSubmit">确定</base-button>
       </div>
     </Form>
   </div>

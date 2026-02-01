@@ -1,4 +1,4 @@
-<script setup lang="ts" generic="T extends Article">
+<script setup lang="ts" generic="T extends {id:string}">
 
 import BaseIcon from "@/components/BaseIcon.vue";
 import { cloneDeep, throttle } from "@/utils";
@@ -133,7 +133,7 @@ defineExpose({scrollBottom})
         <div class="right">
           <BaseIcon
               @click.stop="delItem(item)"
-              :title="$t('delete')">
+              title="删除">
             <DeleteIcon/>
           </BaseIcon>
           <div

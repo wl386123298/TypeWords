@@ -1,26 +1,26 @@
 <script setup lang="ts">
-import BackIcon from '~/components/BackIcon.vue'
-import Empty from '~/components/Empty.vue'
-import ArticleList from '~/components/list/ArticleList.vue'
-import { useBaseStore } from '~/stores/base.ts'
-import type { Article, Dict } from '~/types/types.ts'
-import { useRuntimeStore } from '~/stores/runtime.ts'
-import BaseButton from '~/components/BaseButton.vue'
+import BackIcon from '@/components/BackIcon.vue'
+import Empty from '@/components/Empty.vue'
+import ArticleList from '@/components/list/ArticleList.vue'
+import { useBaseStore } from '@/stores/base.ts'
+import type { Article, Dict } from '@/types/types'
+import { useRuntimeStore } from '@/stores/runtime.ts'
+import BaseButton from '@/components/BaseButton.vue'
 import { useRoute, useRouter } from 'vue-router'
-import EditBook from '~/components/article/EditBook.vue'
+import EditBook from '@/components/article/EditBook.vue'
 import { computed, onMounted, onUnmounted, watch } from 'vue'
-import { _dateFormat, _getDictDataByUrl, _nextTick, msToHourMinute, resourceWrap, total, useNav } from '~/utils'
-import { getDefaultArticle, getDefaultDict } from '~/types/func.ts'
-import Toast from '~/components/base/toast/Toast.ts'
-import ArticleAudio from '~/components/article/ArticleAudio.vue'
-import { MessageBox } from '~/utils/MessageBox.tsx'
-import { useSettingStore } from '~/stores/setting.ts'
+import { _dateFormat, _getDictDataByUrl, _nextTick, msToHourMinute, resourceWrap, total, useNav } from '@/utils'
+import { getDefaultArticle, getDefaultDict } from '@/types/func.ts'
+import Toast from '@/components/base/toast/Toast.ts'
+import ArticleAudio from '@/components/article/ArticleAudio.vue'
+import { MessageBox } from '@/utils/MessageBox.tsx'
+import { useSettingStore } from '@/stores/setting.ts'
 import { useFetch } from '@vueuse/core'
-import { DICT_LIST } from '~/config/env.ts'
-import BaseIcon from '~/components/BaseIcon.vue'
-import Switch from '~/components/base/Switch.vue'
-import { useGetDict } from '~/hooks/dict.ts'
-import { DictType } from '~/types/enum.ts'
+import { DICT_LIST } from '@/config/env.ts'
+import BaseIcon from '@/components/BaseIcon.vue'
+import Switch from '@/components/base/Switch.vue'
+import { useGetDict } from '@/hooks/dict.ts'
+import { DictType } from '@/types/enum.ts'
 
 const runtimeStore = useRuntimeStore()
 const settingStore = useSettingStore()
@@ -29,14 +29,9 @@ const router = useRouter()
 const route = useRoute()
 const { nav } = useNav()
 
-// useHead({
-//   title: `${runtimeStore.editDict.name ?? ''}`,
-// })
-
 let isEdit = $ref(false)
 let isAdd = $ref(false)
 let studyLoading = $ref(false)
-let articleRef = $ref<HTMLDivElement>()
 
 let selectArticle: Article = $ref(getDefaultArticle({ id: -1 }))
 
@@ -153,6 +148,7 @@ const list = $computed(() => {
     }),
   ].concat(runtimeStore.editDict.articles)
 })
+console.log('list', list)
 
 let showTranslate = $ref(true)
 let startPlay = $ref(false)
@@ -212,15 +208,6 @@ watch([() => displayMode, () => selectArticle.id, () => showTranslate], () => {
     positionTranslations()
   }
 })
-
-watch(
-  () => selectArticle.id,
-  () => {
-    _nextTick(() => {
-      articleRef?.scrollTo(0, 0)
-    })
-  }
-)
 </script>
 
 <template>
@@ -236,11 +223,11 @@ watch(
           </div>
           <div class="dict-actions flex">
             <BaseButton v-if="runtimeStore.editDict.custom && runtimeStore.editDict.url" type="info" @click="reset">
-              {{ $t('restore_default') }}
+              恢复默认
             </BaseButton>
-            <BaseButton :loading="studyLoading || loading" type="info" @click="isEdit = true">{{ $t('edit') }}</BaseButton>
-            <BaseButton type="info" @click="router.push('/batch-edit-article')">{{ $t('article_management') }}</BaseButton>
-            <BaseButton :loading="studyLoading || loading" @click="startPractice">{{ $t('learn') }}</BaseButton>
+            <BaseButton :loading="studyLoading || loading" type="info" @click="isEdit = true">编辑</BaseButton>
+            <BaseButton type="info" @click="router.push('batch-edit-article')">文章管理</BaseButton>
+            <BaseButton :loading="studyLoading || loading" @click="startPractice">学习</BaseButton>
           </div>
         </div>
         <div class="flex flex-1 overflow-hidden mt-3">
@@ -259,7 +246,7 @@ watch(
             <template v-if="selectArticle.id">
               <template v-if="selectArticle.id === -1">
                 <div class="flex gap-4 mt-2">
-                  <NuxtImg
+                  <img
                     :src="runtimeStore.editDict?.cover"
                     class="w-30 rounded-md"
                     v-if="runtimeStore.editDict?.cover"
@@ -267,10 +254,10 @@ watch(
                   />
                   <div class="text-lg">{{ runtimeStore.editDict.description }}</div>
                 </div>
-                <div class="text-base mt-10" v-if="totalSpend">{{ $t('total_study_time') }}：{{ totalSpend }}</div>
+                <div class="text-base mt-10" v-if="totalSpend">总学习时长：{{ totalSpend }}</div>
               </template>
               <template v-else>
-                <div ref="articleRef" class="flex-1 overflow-auto pb-30">
+                <div class="flex-1 overflow-auto pb-30">
                   <div>
                     <div class="flex justify-between items-center relative">
                       <span>
@@ -278,13 +265,13 @@ watch(
                         <span class="ml-6 text-2xl" v-if="showTranslate">{{ selectArticle.titleTranslate }}</span>
                       </span>
                       <div class="flex items-center gap-2 mr-4">
-                        <BaseIcon :title="$t('toggle_translation')" @click="showTranslate = !showTranslate">
-                          <IconPhTranslate v-if="showTranslate" />
+                        <BaseIcon :title="`开关释义显示`" @click="showTranslate = !showTranslate">
+                          <IconFluentTranslate16Regular v-if="showTranslate" />
                           <IconFluentTranslateOff16Regular v-else />
                         </BaseIcon>
                         <BaseIcon
                           :disabled="!showTranslate"
-                          :title="$t('switch_display_mode')"
+                          :title="`切换显示模式`"
                           @click="showDisplayMode = !showDisplayMode"
                         >
                           <IconFluentTextAlignLeft16Regular />
@@ -293,13 +280,13 @@ watch(
                     </div>
 
                     <div class="flex gap-1 mr-4 justify-end" v-if="showDisplayMode">
-                      <BaseIcon :title="$t('line_by_line')" @click="displayMode = 'inline'">
+                      <BaseIcon title="逐行显示" @click="displayMode = 'inline'">
                         <IconFluentTextPositionThrough20Regular />
                       </BaseIcon>
-                      <BaseIcon :title="$t('single_line')" @click="displayMode = 'line'">
+                      <BaseIcon title="单行显示" @click="displayMode = 'line'">
                         <IconFluentTextAlignLeft16Regular />
                       </BaseIcon>
-                      <BaseIcon :title="$t('comparison')" @click="displayMode = 'card'">
+                      <BaseIcon title="对照显示" @click="displayMode = 'card'">
                         <IconFluentAlignSpaceFitVertical20Regular />
                       </BaseIcon>
                     </div>
@@ -310,7 +297,7 @@ watch(
                         class="text-xl color-translate-second"
                         v-if="showTranslate && (displayMode !== 'card' || shouldShowInlineTranslation)"
                       >
-                        {{ $t('question') }}: {{ selectArticle?.question?.translate }}
+                        问题: {{ selectArticle?.question?.translate }}
                       </div>
                     </div>
                   </div>
@@ -332,7 +319,7 @@ watch(
                               v-for="(s, n) in w.split(' ').filter(Boolean)"
                               :class="`inline-block word-${i}-${j}-${n}`"
                               :key="`${i}-${j}-${n}`"
-                              ><span>{{ s }}</span>
+                            ><span>{{ s }}</span>
                               <span class="space"></span>
                             </span>
                           </span>
@@ -393,8 +380,8 @@ watch(
                   <template v-if="currentPractice.length">
                     <div class="line my-10"></div>
                     <div class="font-family text-base pr-2">
-                      <div class="text-2xl font-bold">{{ $t('study_record') }}</div>
-                      <div class="mt-1 mb-3">{{ $t('total_study_time') }}：{{ msToHourMinute(total(currentPractice, 'spend')) }}</div>
+                      <div class="text-2xl font-bold">学习记录</div>
+                      <div class="mt-1 mb-3">总学习时长：{{ msToHourMinute(total(currentPractice, 'spend')) }}</div>
                       <div
                         class="item border border-item border-solid mt-2 p-2 bg-[var(--bg-history)] rounded-md flex justify-between"
                         v-for="i in currentPractice"
@@ -417,7 +404,7 @@ watch(
                     @ended="next"
                   />
                   <div class="flex items-center gap-1">
-                    <span>{{ $t('play_next_after_end') }}</span>
+                    <span>结束后播放下一篇</span>
                     <Switch v-model="settingStore.articleAutoPlayNext" />
                   </div>
                 </div>
@@ -431,7 +418,7 @@ watch(
         <div class="dict-header flex justify-between items-center relative">
           <BackIcon class="dict-back z-2" @click="isAdd ? $router.back() : (isEdit = false)" />
           <div class="dict-title absolute text-2xl text-align-center w-full">
-            {{ runtimeStore.editDict.id ? $t('edit_book') : $t('create_book') }}
+            {{ runtimeStore.editDict.id ? '修改' : '创建' }}书籍
           </div>
         </div>
         <div class="center">
@@ -599,3 +586,4 @@ $article-lh: 2.4;
   }
 }
 </style>
+```````` ;

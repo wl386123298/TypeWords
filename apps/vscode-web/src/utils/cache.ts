@@ -1,5 +1,5 @@
 import type { PracticeData, TaskWords } from '@/types/types.ts'
-import type { PracticeState } from '@/stores/practice.ts'
+import { PracticeState } from '@/stores/practice.ts'
 import { IS_DEV } from '@/config/env'
 
 export const PRACTICE_WORD_CACHE = {
@@ -77,6 +77,7 @@ export function setPracticeWordCache(cache: PracticeWordCache | null) {
 }
 
 export function setPracticeArticleCache(cache: PracticeArticleCache | null) {
+  debugger
   if (cache) {
     localStorage.setItem(
       PRACTICE_ARTICLE_CACHE.key,
