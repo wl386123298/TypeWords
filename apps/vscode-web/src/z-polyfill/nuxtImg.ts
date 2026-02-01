@@ -1,6 +1,6 @@
 // src/plugins/nuxtImg.ts
 import { App } from 'vue'
-import NuxtImg from '../components/NuxtImg.vue'
+import NuxtImg from './NuxtImg.vue'
 
 export default {
   install(app: App) {

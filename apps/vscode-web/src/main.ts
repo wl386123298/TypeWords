@@ -8,14 +8,15 @@ import VueVirtualScroller from 'vue-virtual-scroller'
 import 'vue-virtual-scroller/dist/vue-virtual-scroller.css'
 import './types/global.d'
 import loadingDirective from './directives/loading.tsx'
-import i18nPlugin from './plugins/i18n.ts'
-import nuxtLinkPlugin from './plugins/nuxtLink'
-import nuxtImgPlugin from './plugins/nuxtImg.ts'
+import i18nPlugin from './z-polyfill/i18n.ts'
+import nuxtLinkPlugin from './z-polyfill/nuxtLink.ts'
+import nuxtImgPlugin from './z-polyfill/nuxtImg.ts'
 
 const pinia = createPinia()
 const app = createApp(App)
 
 ;(window as any).useHead = () => {}
+;(window as any).useSeoMeta = () => {}
 ;(window as any).useRoute = () => ({})
 ;(window as any).useRouter = () => ({ push() {}, replace() {} })
 

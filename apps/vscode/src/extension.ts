@@ -65,11 +65,11 @@ class ChatPanel {
     // - Nuxt preview 默认端口是 4173（但可以通过 --port 参数修改）
     // - 如果使用其他端口（如 3000），请修改下面的端口号
     // - 生产环境可以使用: 'https://typewords-c3i.pages.dev'
-    const cdnUrl = 'http://tw.cc'  // 修改为你的实际端口（nuxt preview 的端口）
-    
+		const cdnUrl = 'https://441bee76.typewords-c3i.pages.dev';
+
     // 生成 nonce 用于 CSP
     const nonce = Buffer.from(Date.now().toString()).toString('base64')
-    
+
     // CSP 配置：允许内联脚本（使用 nonce）和外部资源
     const csp = [
       "default-src 'none'",
@@ -77,108 +77,30 @@ class ChatPanel {
       `style-src ${cdnUrl} 'unsafe-inline'`,
       `connect-src ${cdnUrl} ${websiteUrl}`,
       "img-src data: https:",
-      "font-src data:",
-      `connect-src 'https://typewords.cc' 'http://tw.cc' 'vscode-webview:'`
+      "font-src data:"
     ].join('; ')
-    
-    return `<!DOCTYPE html>
-<html lang="zh-CN" style="width: 100%!important; height: 100%!important;">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="Content-Security-Policy" content="${csp}">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>单词练习</title>
 
-    <link rel="stylesheet" href="${cdnUrl}/_nuxt/entry.BovBCbfE.css" crossorigin>
-    <link rel="modulepreload" as="script" crossorigin href="${cdnUrl}/_nuxt/mU60VWDl.js">
-    <script type="module" nonce="${nonce}" src="${cdnUrl}/_nuxt/mU60VWDl.js" crossorigin></script>
-</head>
-<body>
-    <div id="__nuxt"></div>
-    <div id="teleports"></div>
-    <script nonce="${nonce}">
-       var __NUXT__ = {};
-       __NUXT__.config = {
-            public: {
-                apiBase: "http://localhost/",
-                origin: "https://typewords.cc",
-                host: "typewords.cc",
-                latestCommitHash: "d1f8e28c",
-                i18n: {
-                    baseUrl: "",
-                    defaultLocale: "zh",
-                    rootRedirect: "",
-                    redirectStatusCode: 302,
-                    skipSettingLocaleOnNavigate: false,
-                    locales: [
-                        { code: "en", language: "en-US", name: "English" },
-                        { code: "zh", language: "zh-CN", name: "中文" },
-                        { code: "es", language: "es-ES", name: "Español" },
-                        { code: "fr", language: "fr-FR", name: "Français" },
-                        { code: "pt", language: "pt-BR", name: "Português" },
-                        { code: "de", language: "de-DE", name: "Deutsch" },
-                        { code: "ru", language: "ru-RU", name: "Русский" },
-                        { code: "uk", language: "uk-UA", name: "Українська" },
-                        { code: "ja", language: "ja-JP", name: "日本語" },
-                        { code: "ko", language: "ko-KR", name: "한국어" },
-                        { code: "th", language: "th-TH", name: "ไทย" },
-                        { code: "vi", language: "vi-VN", name: "Tiếng Việt" },
-                        { code: "id", language: "id-ID", name: "Bahasa Indonesia" },
-                        { code: "tw", language: "zh-TW", name: "繁體中文" }
-                    ],
-                    detectBrowserLanguage: {
-                        alwaysRedirect: false,
-                        cookieCrossOrigin: false,
-                        cookieDomain: "",
-                        cookieKey: "i18n_redirected",
-                        cookieSecure: false,
-                        fallbackLocale: "",
-                        redirectOn: "root",
-                        useCookie: true
-                    },
-                    experimental: {
-                        localeDetector: "",
-                        typedPages: true,
-                        typedOptionsAndMessages: false,
-                        alternateLinkCanonicalQueries: true,
-                        devCache: false,
-                        cacheLifetime: "",
-                        stripMessagesPayload: false,
-                        preload: false,
-                        strictSeo: false,
-                        nitroContextDetection: true,
-                        httpCacheDuration: 10
-                    },
-                    domainLocales: {
-                        en: { domain: "" },
-                        zh: { domain: "" },
-                        es: { domain: "" },
-                        fr: { domain: "" },
-                        pt: { domain: "" },
-                        de: { domain: "" },
-                        ru: { domain: "" },
-                        uk: { domain: "" },
-                        ja: { domain: "" },
-                        ko: { domain: "" },
-                        th: { domain: "" },
-                        vi: { domain: "" },
-                        id: { domain: "" },
-                        tw: { domain: "" }
-                    }
-                }
-             }, app: {baseURL: "/", buildId: "3d6cd113-05d1-4810-b754-2d10a3b15f83", buildAssetsDir: "/_nuxt/", cdnURL: ""}
-        }
-    </script>
-<script type="application/json" data-nuxt-data="nuxt-app" data-ssr="false" id="__NUXT_DATA__">[
-  {
-    "prerenderedAt": 1,
-    "serverRendered": 2
-  },
-  1769442962057,
-  false
-]</script>
-</body>
-</html>`
+  return `<!DOCTYPE html>
+			<html lang="zh-CN" style="width: 100%!important; height: 100%!important;">
+			<head>
+				<meta charset="UTF-8">
+				<meta http-equiv="Content-Security-Policy" content="default-src 'none'; frame-src ${websiteUrl}; script-src ${cdnUrl}; style-src ${cdnUrl};">
+				<meta name="viewport" content="width=device-width, initial-scale=1.0">
+				<title>单词练习</title>
+			</head>
+			<body>
+			<div id="app"></div>
+			  <script type="module" crossorigin src="
+https://441bee76.typewords-c3i.pages.dev/vscode/assets/index-CbprgzOC.js"></script>
+  <link rel="modulepreload" crossorigin href="
+https://441bee76.typewords-c3i.pages.dev/vscode/assets/icons-DVb7W-0B.js">
+  <link rel="modulepreload" crossorigin href="
+https://441bee76.typewords-c3i.pages.dev/vscode/assets/utils-Bkoc15Tl.js">
+  <link rel="stylesheet" crossorigin href="
+https://441bee76.typewords-c3i.pages.dev/vscode/assets/utils-pqXEIRJB.css">
+  <link rel="stylesheet" crossorigin href="
+https://441bee76.typewords-c3i.pages.dev/vscode/assets/index-D4BRJAZe.css">
+			</body>`
   }
 }
 
@@ -198,4 +120,4 @@ export function activate(context: vscode.ExtensionContext) {
 }
 
 // This method is called when your extension is deactivated
-export function deactivate() {}
+export function deactivate() { }
