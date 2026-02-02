@@ -1,9 +1,9 @@
 /**
  * 通用 EO Pages 部署脚本
- * 用法: node scripts/deploy-eo-pages.js --name <EO项目名>
+ * 用法: node scripts/deploy-eo-pages.js --dir <dist目录> --name <EO项目名>
  * 示例:
- *   node scripts/deploy-eo-pages.js --name type-words-deploy
- *   node scripts/deploy-eo-pages.js -n vscode-web-deploy
+ *   node scripts/deploy-eo-pages.js --dir dist --name type-words-deploy
+ *   node scripts/deploy-eo-pages.js -d dist -n vscode-web-deploy
  *
  * 环境变量: EO_PAGES_TOKEN（必填）
  */
@@ -20,6 +20,7 @@ function getArg(name, short) {
   return null
 }
 
+const dir = getArg('--dir', '-d') || 'dist'
 const name = getArg('--name', '-n')
 
 if (!name) {
@@ -33,7 +34,8 @@ if (!EO_PAGES_TOKEN) {
   process.exit(1)
 }
 
-const cmd = `edgeone pages deploy ../dist -n ${name} -t ${EO_PAGES_TOKEN}`
+const distPath = path.resolve(process.cwd(), dir)
+const cmd = `edgeone pages deploy "${distPath}" -n ${name} -t ${EO_PAGES_TOKEN}`
 
 exec(cmd, (error, stdout, stderr) => {
   if (error) {
